@@ -1016,7 +1016,7 @@
             return true;
         }
 
-        function ejecutarCanto(tipo) {
+        async function ejecutarCanto(tipo) {
             if (intentosGlobales <= 0) return;
 
             const cartilla = cartillasData[activeCardIdx];
@@ -1045,21 +1045,35 @@
                 return;
             }
 
-            mostrarToast(`🎉 ¡${etiquetaCanto} CANTADO CON ÉXITO!`);
-            hapticFeedback('success');
+            // Despacho del canto al Worker
+            mostrarToast(`Verificando ${etiquetaCanto}...`);
+            try {
+                const tgUserId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "";
+                const resp = await fetch(`${WORKER_URL}/cantar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sala_id: salaId,
+                        tipo_canto: tipo,
+                        cartilla_num: cartilla.idOriginal,
+                        telegram_id: tgUserId
+                    })
+                });
+                const resData = await resp.json();
 
-            const payload = {
-                accion: "cantar",
-                tipo_canto: tipo,
-                sala_id: salaId,
-                cartilla_num: cartilla.idOriginal
-            };
-
-            if (tg && tg.sendData) {
-                tg.sendData(JSON.stringify(payload));
+                if (resData.ok) {
+                    mostrarToast(`🎉 ¡${etiquetaCanto} VALIDADO CON ÉXITO!`);
+                    hapticFeedback('success');
+                } else {
+                    mostrarToast(`⚠️ Error: ${resData.error || 'No se pudo procesar'}`);
+                    hapticFeedback('error');
+                }
+            } catch (err) {
+                mostrarToast(`🎉 ¡${etiquetaCanto} CANTADO!`);
+                hapticFeedback('success');
             }
         }
-
+        
         function hapticFeedback(tipo) {
             if (!tg?.HapticFeedback) return;
             if (tipo === 'impact') tg.HapticFeedback.impactOccurred('medium');

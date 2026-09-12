@@ -1,0 +1,149 @@
+/* Configuraciones básicas y reinicio de márgenes */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fondo de la app adaptado al tema oscuro de Telegram */
+body {
+    background-color: var(--tg-theme-bg-color, #1a1a1a);
+    color: var(--tg-theme-text-color, #ffffff);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.contenedor {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Cabecera Temática (Cazadores de Tesoros) */
+header {
+    text-align: center;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+header h1 {
+    font-size: 26px;
+    margin-bottom: 5px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    letter-spacing: 2px;
+}
+
+/* La magia matemática: CSS Grid para hacer la cuadrícula 5x5 perfecta */
+.carton {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    background-color: #2d3748;
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+    border: 2px solid #4a5568;
+}
+
+/* Estilos de las letras superiores (K-A-L-E-I) */
+.letra-bingo {
+    background-color: #b21f1f; /* Rojo aventura */
+    color: white;
+    font-weight: 900;
+    font-size: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    padding: 10px 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.casilla {
+    background-color: #4a5568;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1 / 1; /* Hace que sean cuadrados perfectos */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
+}
+
+/* Efecto al tocar un número (marcar la casilla en Oro) */
+.casilla:active, .casilla.marcada {
+    background-color: #ffd700; /* Amarillo Oro */
+    color: #1a1a1a;
+    transform: scale(0.95);
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.5);
+    border: 1px solid #ccaa00;
+}
+
+/* La casilla central */
+.casilla.libre {
+    background-color: #1e3c72; /* Azul profundo */
+    font-size: 12px;
+    color: #e2e8f0;
+}
+
+/* ========================================= */
+/* NUEVOS BOTONES DE DESTREZA (Fase 4)       */
+/* ========================================= */
+
+.controles-destreza {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.btn-accion {
+    color: white;
+    border: none;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 900;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Botones de premios intermedios (Hilera y 4 Puntas) */
+.btn-secundario {
+    background-color: #2b6cb0; /* Azul táctico */
+    box-shadow: 0 5px 0 #1a365d;
+}
+
+.btn-secundario:active {
+    transform: translateY(5px);
+    box-shadow: 0 0px 0 #1a365d;
+}
+
+/* Botón gigante de KALEI (El premio mayor) */
+.btn-principal {
+    background-color: #e53e3e; /* Rojo alerta */
+    box-shadow: 0 6px 0 #9b2c2c;
+    font-size: 20px;
+    margin-top: 4px;
+}
+
+.btn-principal:active {
+    transform: translateY(6px);
+    box-shadow: 0 0px 0 #9b2c2c;
+}

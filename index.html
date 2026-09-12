@@ -83,6 +83,22 @@
             text-transform: uppercase;
         }
 
+        .header-badges {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-intentos {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            font-size: clamp(8px, 1.3vh, 10px);
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
         .badge-vip {
             background: rgba(245, 158, 11, 0.25);
             border: 1px solid var(--accent-gold);
@@ -114,7 +130,7 @@
             background: rgba(37, 99, 235, 0.45);
         }
 
-        /* CONSOLA DE BALOTAS: ACTUAL VS HISTORIAL */
+        /* CONSOLA DE BALOTAS */
         .balls-console {
             display: flex;
             align-items: center;
@@ -219,61 +235,159 @@
             font-style: italic;
         }
 
-        /* NAVEGADOR DE CARTILLAS */
-        .tabs-container {
+        /* NAVEGADOR COMPACTO MULTICARTILLA */
+        .nav-cartillas-compact {
             display: flex;
             align-items: center;
-            gap: 6px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding: 2px 0;
+            justify-content: space-between;
+            background: rgba(22, 30, 49, 0.95);
+            border: 1px solid #2f3d59;
+            border-radius: 10px;
+            padding: clamp(3px, 0.8vh, 6px) clamp(6px, 1.5vw, 10px);
             flex-shrink: 0;
         }
 
-        .tabs-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .tab-btn {
-            background: #182236;
-            color: var(--text-muted);
-            border: 1px solid #2c3b57;
-            padding: clamp(3px, 0.8vh, 5px) clamp(8px, 2vw, 12px);
-            border-radius: 6px;
-            font-size: clamp(10px, 1.6vh, 11px);
-            font-weight: 700;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .tab-btn.active {
-            background: var(--btn-blue);
+        .nav-arrow-btn {
+            background: var(--bg-cell);
             color: #ffffff;
-            border-color: #60a5fa;
-            box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+            border: 1px solid var(--border-cell);
+            width: clamp(32px, 4.8vh, 38px);
+            height: clamp(30px, 4.2vh, 34px);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
         }
 
-        /* Pestaña VIP con alerta de proximidad */
-        .tab-btn.tab-cerca {
+        .nav-arrow-btn:active {
+            background: var(--btn-blue);
+        }
+
+        .nav-center-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            flex: 1;
+            padding: 0 8px;
+        }
+
+        .nav-card-title {
+            font-size: clamp(12px, 1.8vh, 13px);
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-prox-mini {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-grid-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            width: clamp(32px, 4.8vh, 38px);
+            height: clamp(30px, 4.2vh, 34px);
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 6px;
+        }
+
+        .nav-grid-btn:active {
+            background: var(--btn-blue);
+        }
+
+        /* MODAL SELECTOR RÁPIDO 1-20 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: var(--bg-card);
+            border: 1px solid #2f3d59;
+            border-radius: 14px;
+            padding: 16px;
+            width: 90%;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .modal-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .modal-grid button {
+            background: var(--bg-cell);
+            border: 1px solid var(--border-cell);
+            color: #ffffff;
+            padding: 8px 0;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .modal-grid button.activo {
+            background: var(--btn-blue);
+            border-color: #60a5fa;
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.5);
+        }
+
+        .modal-grid button.cerca {
             border-color: var(--accent-gold);
             color: #fef08a;
-            box-shadow: 0 0 8px var(--accent-gold-glow);
         }
 
-        .tab-btn.tab-listo {
+        .modal-grid button.listo {
             border-color: var(--accent-green);
             color: #a7f3d0;
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-            animation: pulse-tab 1.2s infinite alternate;
         }
 
-        @keyframes pulse-tab {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.04); }
+        .modal-close-btn {
+            width: 100%;
+            background: #334155;
+            color: #ffffff;
+            border: none;
+            padding: 8px 0;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
         }
 
         /* CONTENEDOR CARTILLA */
@@ -287,7 +401,7 @@
             position: relative;
         }
 
-        /* ALERTA VISUAL VIP: BANNER FLOTANTE DE PROXIMIDAD */
+        /* ALERTA VISUAL VIP */
         .proximity-banner {
             display: none;
             background: linear-gradient(90deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
@@ -321,7 +435,6 @@
             transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
         }
 
-        /* ESTADO VIP: CARTILLA A PUNTO DE CANTAR (FALTA 1) */
         .card-board.alert-cerca {
             border: 2px solid var(--accent-gold);
             background: linear-gradient(180deg, #241c30 0%, #161e31 100%);
@@ -329,7 +442,6 @@
             animation: pulse-glow-gold 1.4s infinite alternate ease-in-out;
         }
 
-        /* ESTADO VIP: CANTÓ DISPONIBLE (FALTA 0) */
         .card-board.alert-listo {
             border: 2px solid var(--accent-green);
             background: linear-gradient(180deg, #132a2a 0%, #161e31 100%);
@@ -444,6 +556,12 @@
             background: var(--btn-blue-hover);
         }
 
+        .action-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
         .action-btn.full-width {
             grid-column: span 2;
             background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
@@ -466,7 +584,7 @@
             font-size: 12px;
             font-weight: 700;
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            z-index: 100;
+            z-index: 300;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -484,17 +602,18 @@
         <header class="header-box">
             <div class="header-top">
                 <span class="header-title" id="headerTitle">KALEIDO BINGO</span>
-                <span id="vipBadge"></span>
+                <div class="header-badges">
+                    <span class="badge-intentos" id="badgeIntentos">INTENTOS: 3/3</span>
+                    <span id="vipBadge"></span>
+                </div>
             </div>
             
             <div class="balls-console">
-                <!-- BALOTA ACTUAL DESTACADA -->
                 <div class="current-ball-box">
                     <span class="current-label">ACTUAL</span>
                     <div class="current-ball-orb empty" id="currentBallVal">--</div>
                 </div>
 
-                <!-- HISTORIAL BALOTAS ANTERIORES -->
                 <div class="history-lane">
                     <span class="history-label">ANTERIORES (ÚLTIMAS 6)</span>
                     <div class="history-balls-row" id="historyBallsRow">
@@ -504,8 +623,18 @@
             </div>
         </header>
 
-        <!-- SELECTOR DE PESTAÑAS MULTICARTILLA -->
-        <nav class="tabs-container" id="tabsContainer"></nav>
+        <!-- NAVEGADOR COMPACTO (MÓVIL Y PC) -->
+        <nav class="nav-cartillas-compact" id="navCompact">
+            <button class="nav-arrow-btn" onclick="cambiarCartilla(-1)">◀</button>
+            <div class="nav-center-info" onclick="abrirModalSelector()">
+                <span class="nav-card-title" id="navCardTitle">Cartilla 1 / 1</span>
+                <span class="nav-prox-mini" id="navProxMini"></span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <button class="nav-grid-btn" onclick="abrirModalSelector()">☰</button>
+                <button class="nav-arrow-btn" onclick="cambiarCartilla(1)">▶</button>
+            </div>
+        </nav>
 
         <!-- CONTENEDOR CENTRADO DE CARTILLA -->
         <div class="card-wrapper">
@@ -538,6 +667,15 @@
         </footer>
     </div>
 
+    <!-- MODAL SELECTOR RÁPIDO 1-20 -->
+    <div id="modalSelector" class="modal-overlay" onclick="cerrarModalSelector(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="modal-title">Seleccionar Cartilla</div>
+            <div id="modalGrid" class="modal-grid"></div>
+            <button class="modal-close-btn" onclick="cerrarModalSelector()">Cerrar</button>
+        </div>
+    </div>
+
     <div class="toast-notify" id="toastNotify"></div>
 
     <script>
@@ -547,21 +685,24 @@
             tg.expand();
         }
 
+        const WORKER_URL = "https://bingo-kalei-ve-worker.onrender.com";
+
         const urlParams = new URLSearchParams(window.location.search);
         const rawParamC = urlParams.get('c') || '';
         const paramVip = (urlParams.get('vip') || '').toLowerCase() === 'si';
         const salaId = urlParams.get('s') || '1';
 
-        // Estructura: array de objetos { idOriginal: 1, numeros: [...], marcas: Set }
         let cartillasData = [];
-        let activeCardIdx = 0; // Apunta al índice de cartillasData
+        let activeCardIdx = 0;
         let historialBalotas = [];
+        let balotasCantadasSet = new Set();
+        let intentosGlobales = 3;
 
         // GESTIÓN DEL BADGE VIP / UPSELL
         const badgeEl = document.getElementById('vipBadge');
         if (paramVip) {
             badgeEl.className = 'badge-vip';
-            badgeEl.innerText = '⭐ VIP AUTOMARCADO';
+            badgeEl.innerText = '⭐ VIP';
             badgeEl.onclick = () => {
                 mostrarToast("⭐ VIP Activo: automarcado, alertas y auto-ordenamiento prioritario.");
                 hapticFeedback('selection');
@@ -575,15 +716,12 @@
             };
         }
 
-        document.getElementById('headerTitle').innerText = `KALEIDO • SALA #${salaId}`;
+        document.getElementById('headerTitle').innerText = `KALEIDO • PARTIDA #${salaId}`;
 
         // LÍNEAS REGLAMENTARIAS
         const LINEAS_VALIDAS = [
-            // Filas
             [0,1,2,3,4], [5,6,7,8,9], [10,11,12,13,14], [15,16,17,18,19], [20,21,22,23,24],
-            // Columnas
             [0,5,10,15,20], [1,6,11,16,21], [2,7,12,17,22], [3,8,13,18,23], [4,9,14,19,24],
-            // Diagonales
             [0,6,12,18,24], [4,8,12,16,20]
         ];
         const PUNTAS_POS = [0, 4, 20, 24];
@@ -605,7 +743,7 @@
             for (let i = 0; i < numeros.length; i += 25) {
                 const bloque = numeros.slice(i, i + 25);
                 if (bloque.length === 25) {
-                    const setMarcas = new Set([12]); // Casilla central siempre libre
+                    const setMarcas = new Set([12]);
                     cartillasData.push({
                         idOriginal: cartillaCount++,
                         numeros: bloque,
@@ -617,19 +755,15 @@
             actualizarEstadoJuego();
         }
 
-        // CÁLCULO DE PROXIMIDAD DE CANTO (DISTANCIA MÍNIMA)
         function calcularDistanciaCanto(marcas) {
-            // Distancia Hilera
             let minHilera = 5;
             LINEAS_VALIDAS.forEach(linea => {
                 const faltantes = linea.filter(pos => !marcas.has(pos)).length;
                 if (faltantes < minHilera) minHilera = faltantes;
             });
 
-            // Distancia 4 Puntas
             const minPuntas = PUNTAS_POS.filter(pos => !marcas.has(pos)).length;
 
-            // Distancia Kalei Completo
             let minKalei = 0;
             for (let i = 0; i < 25; i++) {
                 if (!marcas.has(i)) minKalei++;
@@ -643,11 +777,9 @@
             return { distancia: minDist, tipo: tipo };
         }
 
-        // AUTO-ORDENAMIENTO VIP Y RENDERIZADO
         function actualizarEstadoJuego(autoSeleccionarMejor = false) {
             if (cartillasData.length === 0) return;
 
-            // Si es VIP, auto-ordenar colocando primero la que esté más cerca de ganar
             if (paramVip && cartillasData.length > 1) {
                 const idPrevio = cartillasData[activeCardIdx]?.idOriginal;
 
@@ -658,60 +790,82 @@
                 });
 
                 if (autoSeleccionarMejor) {
-                    // Seleccionar automáticamente la cartilla que va ganando
                     activeCardIdx = 0;
                 } else {
-                    // Mantener la visualización de la que el usuario estaba mirando
                     const nuevoIdx = cartillasData.findIndex(c => c.idOriginal === idPrevio);
                     activeCardIdx = nuevoIdx !== -1 ? nuevoIdx : 0;
                 }
             }
 
-            renderizarTabs();
+            renderizarNavCompact();
             renderizarCartillaActiva();
         }
 
-        // RENDERIZADOR DE PESTAÑAS CON INDICADORES
-        function renderizarTabs() {
-            const container = document.getElementById('tabsContainer');
-            container.innerHTML = '';
+        function renderizarNavCompact() {
+            if (cartillasData.length === 0) return;
+            const current = cartillasData[activeCardIdx];
+            document.getElementById('navCardTitle').innerText = `Cartilla ${current.idOriginal} / ${cartillasData.length}`;
 
-            if (cartillasData.length <= 1) {
-                container.style.display = 'none';
-                return;
-            }
-
-            container.style.display = 'flex';
-            cartillasData.forEach((c, idx) => {
-                const distInfo = calcularDistanciaCanto(c.marcas);
-                const btn = document.createElement('button');
-                
-                let clases = `tab-btn ${idx === activeCardIdx ? 'active' : ''}`;
-                let textoExtra = '';
-
-                if (paramVip) {
-                    if (distInfo.distancia === 0) {
-                        clases += ' tab-listo';
-                        textoExtra = ' 🏆';
-                    } else if (distInfo.distancia === 1) {
-                        clases += ' tab-cerca';
-                        textoExtra = ' 🔥';
-                    }
+            const miniProx = document.getElementById('navProxMini');
+            if (paramVip) {
+                const distInfo = calcularDistanciaCanto(current.marcas);
+                if (distInfo.distancia === 0) {
+                    miniProx.innerText = `🏆 ¡LISTO PARA CANTAR ${distInfo.tipo.toUpperCase()}!`;
+                    miniProx.style.color = '#34d399';
+                } else if (distInfo.distancia === 1) {
+                    miniProx.innerText = `🔥 A 1 de ${distInfo.tipo.toUpperCase()}`;
+                    miniProx.style.color = '#fbbf24';
+                } else {
+                    miniProx.innerText = '';
                 }
-
-                btn.className = clases;
-                btn.innerText = `Cartilla ${c.idOriginal}${textoExtra}`;
-                btn.onclick = () => {
-                    activeCardIdx = idx;
-                    renderizarTabs();
-                    renderizarCartillaActiva();
-                    hapticFeedback('selection');
-                };
-                container.appendChild(btn);
-            });
+            } else {
+                miniProx.innerText = '';
+            }
         }
 
-        // RENDERIZADOR DE LA MATRIZ Y APLICACIÓN DE COLOR VIP
+        function cambiarCartilla(delta) {
+            if (cartillasData.length <= 1) return;
+            activeCardIdx = (activeCardIdx + delta + cartillasData.length) % cartillasData.length;
+            renderizarNavCompact();
+            renderizarCartillaActiva();
+            hapticFeedback('selection');
+        }
+
+        function abrirModalSelector() {
+            const grid = document.getElementById('modalGrid');
+            grid.innerHTML = '';
+
+            cartillasData.forEach((c, idx) => {
+                const btn = document.createElement('button');
+                btn.innerText = c.idOriginal;
+
+                if (idx === activeCardIdx) {
+                    btn.classList.add('activo');
+                }
+
+                if (paramVip) {
+                    const d = calcularDistanciaCanto(c.marcas).distancia;
+                    if (d === 0) btn.classList.add('listo');
+                    else if (d === 1) btn.classList.add('cerca');
+                }
+
+                btn.onclick = () => {
+                    activeCardIdx = idx;
+                    renderizarNavCompact();
+                    renderizarCartillaActiva();
+                    cerrarModalSelector();
+                    hapticFeedback('selection');
+                };
+                grid.appendChild(btn);
+            });
+
+            document.getElementById('modalSelector').style.display = 'flex';
+        }
+
+        function cerrarModalSelector() {
+            document.getElementById('modalSelector').style.display = 'none';
+        }
+
         function renderizarCartillaActiva() {
             const grid = document.getElementById('gridNumbers');
             const board = document.getElementById('cardBoard');
@@ -723,7 +877,6 @@
 
             const distInfo = calcularDistanciaCanto(cartilla.marcas);
 
-            // GESTIÓN DE COLORES VIP (A PUNTO DE CANTAR)
             board.classList.remove('alert-cerca', 'alert-listo');
             banner.style.display = 'none';
 
@@ -760,7 +913,6 @@
             });
         }
 
-        // MARCADO MANUAL
         function alternarMarcado(idx) {
             if (idx === 12) return;
             const marcas = cartillasData[activeCardIdx].marcas;
@@ -773,25 +925,31 @@
             actualizarEstadoJuego(false);
         }
 
-        // REGISTRADOR Y DISTRIBUIDOR DE BALOTAS
-        function registrarBalota(numero) {
-            if (!numero || historialBalotas.includes(numero)) return;
-            historialBalotas.unshift(numero);
+        function registrarBalota(numeroCompleto) {
+            if (!numeroCompleto || historialBalotas.includes(numeroCompleto)) return;
+
+            historialBalotas.unshift(numeroCompleto);
             if (historialBalotas.length > 7) {
                 historialBalotas.pop();
             }
 
-            // AUTOMARCADO VIP EN TODAS LAS CARTILLAS
-            if (paramVip) {
-                cartillasData.forEach(c => {
-                    c.numeros.forEach((val, cellIdx) => {
-                        if (String(val) === String(numero)) {
-                            c.marcas.add(cellIdx);
-                        }
+            const numPuro = String(numeroCompleto).includes('-') 
+                ? String(numeroCompleto).split('-')[1] 
+                : String(numeroCompleto);
+
+            if (!balotasCantadasSet.has(numPuro)) {
+                balotasCantadasSet.add(numPuro);
+
+                if (paramVip) {
+                    cartillasData.forEach(c => {
+                        c.numeros.forEach((val, cellIdx) => {
+                            if (String(val) === String(numPuro)) {
+                                c.marcas.add(cellIdx);
+                            }
+                        });
                     });
-                });
-                // Actualizar orden y enfocar automáticamente la cartilla más avanzada
-                actualizarEstadoJuego(true);
+                    actualizarEstadoJuego(true);
+                }
             }
 
             renderizarConsolaBalotas();
@@ -830,7 +988,19 @@
             });
         }
 
-        // VALIDACIÓN DE CANTOS
+        async function sincronizarBalotasWorker() {
+            try {
+                const resp = await fetch(`${WORKER_URL}/balotas_activas?sala_id=${salaId}`);
+                const data = await resp.json();
+                if (data.ok && Array.isArray(data.balotas)) {
+                    const enOrden = [...data.balotas].reverse();
+                    enOrden.forEach(b => registrarBalota(b));
+                }
+            } catch (e) {
+                console.log("Esperando conexión con el Worker...", e);
+            }
+        }
+
         function verificarHilera(marcas) {
             return LINEAS_VALIDAS.some(linea => linea.every(pos => marcas.has(pos)));
         }
@@ -847,6 +1017,8 @@
         }
 
         function ejecutarCanto(tipo) {
+            if (intentosGlobales <= 0) return;
+
             const cartilla = cartillasData[activeCardIdx];
             if (!cartilla) return;
 
@@ -858,8 +1030,18 @@
             else if (tipo === 'bingo') valido = verificarKalei(cartilla.marcas);
 
             if (!valido) {
-                mostrarToast(`⚠️ Patrón de ${etiquetaCanto} incompleto en esta cartilla.`);
+                intentosGlobales--;
+                document.getElementById('badgeIntentos').innerText = `INTENTOS: ${intentosGlobales}/3`;
                 hapticFeedback('error');
+
+                if (intentosGlobales <= 0) {
+                    document.getElementById('btnHilera').disabled = true;
+                    document.getElementById('btnPuntas').disabled = true;
+                    document.getElementById('btnBingo').disabled = true;
+                    mostrarToast("❌ Has agotado tus 3 intentos en esta partida.");
+                } else {
+                    mostrarToast(`⚠️ Canto incorrecto. Te quedan ${intentosGlobales} intento(s).`);
+                }
                 return;
             }
 
@@ -898,6 +1080,7 @@
         document.getElementById('btnBingo').onclick = () => ejecutarCanto('bingo');
 
         inicializarCartillas();
+        setInterval(sincronizarBalotasWorker, 2500);
     </script>
 </body>
 </html>

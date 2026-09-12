@@ -1031,7 +1031,8 @@
 
             if (!valido) {
                 intentosGlobales--;
-                document.getElementById('badgeIntentos').innerText = `INTENTOS: ${intentosGlobales}/3`;
+                const badge = document.getElementById('badgeIntentos');
+                if (badge) badge.innerText = `INTENTOS: ${intentosGlobales}/3`;
                 hapticFeedback('error');
 
                 if (intentosGlobales <= 0) {
@@ -1045,32 +1046,42 @@
                 return;
             }
 
-            // Despacho del canto al Worker
-            mostrarToast(`Verificando ${etiquetaCanto}...`);
+            hapticFeedback('success');
+            mostrarToast(`⏳ Validando ${etiquetaCanto} con la sala...`);
+
+            const usuarioTg = tg?.initDataUnsafe?.user;
+            const telegramId = usuarioTg?.id ? String(usuarioTg.id) : "";
+            const aliasUsuario = usuarioTg?.username ? `@${usuarioTg.username}` : (usuarioTg?.first_name || "Jugador");
+
+            const payload = {
+                sala_id: parseInt(salaId),
+                tipo_canto: tipo,
+                cartilla_num: cartilla.idOriginal,
+                telegram_id: telegramId,
+                alias: aliasUsuario
+            };
+
             try {
-                const tgUserId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : "";
                 const resp = await fetch(`${WORKER_URL}/cantar`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sala_id: salaId,
-                        tipo_canto: tipo,
-                        cartilla_num: cartilla.idOriginal,
-                        telegram_id: tgUserId
-                    })
+                    body: JSON.stringify(payload)
                 });
                 const resData = await resp.json();
 
                 if (resData.ok) {
-                    mostrarToast(`🎉 ¡${etiquetaCanto} VALIDADO CON ÉXITO!`);
-                    hapticFeedback('success');
+                    mostrarToast(`🎉 ¡${etiquetaCanto} CANTADO CON ÉXITO!`);
+                    if (tipo === 'bingo') {
+                        document.getElementById('btnHilera').disabled = true;
+                        document.getElementById('btnPuntas').disabled = true;
+                        document.getElementById('btnBingo').disabled = true;
+                    }
                 } else {
-                    mostrarToast(`⚠️ Error: ${resData.error || 'No se pudo procesar'}`);
-                    hapticFeedback('error');
+                    mostrarToast(`⚠️ ${resData.mensaje || 'No se pudo procesar el canto'}`);
                 }
             } catch (err) {
-                mostrarToast(`🎉 ¡${etiquetaCanto} CANTADO!`);
-                hapticFeedback('success');
+                console.error("Aviso al comunicar canto al Worker:", err);
+                mostrarToast(`🎉 ¡${etiquetaCanto} CANTADO CON ÉXITO!`);
             }
         }
         

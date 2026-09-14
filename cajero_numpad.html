@@ -575,7 +575,7 @@
             return;
         }
 
-        ejecutarHaptico('success');
+        ejecutarHaptico('medium');
         btnConfirmarOperacion.disabled = true;
         textoBotonConfirmar.textContent = 'PROCESANDO...';
 
@@ -598,6 +598,7 @@
         const payload = {
             accion: tipoOperacion === 'retiro' ? 'cajero_retiro' : 'cajero_recarga',
             tipo_operacion: tipoOperacion,
+            operacion: tipoOperacion,
             moneda_origen: modoMoneda,
             monto_uskt: parseFloat(montoFinalUSKT.toFixed(2)),
             monto_bs: parseFloat(montoFinalBS.toFixed(2)),
@@ -605,36 +606,44 @@
             idempotency_key: idempotencyKey
         };
 
-        // 1. Envío mediante fetch al backend de Vercel si existe apiUrl
-        if (apiUrlParam) {
-            try {
-                await fetch(`${apiUrlParam.replace(/\/$/, '')}/api/cajero-submit`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Telegram-Init-Data': (tg && tg.initData) ? tg.initData : ''
-                    },
-                    body: JSON.stringify(payload)
-                });
-            } catch (error) {
-                console.warn("Fallo en despacho por API, respaldando con Telegram:", error);
-            }
-        }
+        // URL base con respaldo directo a Vercel en caso de no venir por parámetro
+        const urlBaseVercel = apiUrlParam || 'https://bingo-kalei-ve.vercel.app';
+        const endpointDestino = `${urlBaseVercel.replace(/\/$/, '')}/api/cajero-submit`;
 
-        // 2. Envío nativo vía Telegram WebApp (si está habilitado el canal de datos)
         try {
-            if (tg && typeof tg.sendData === 'function') {
-                tg.sendData(JSON.stringify(payload));
+            const respuesta = await fetch(endpointDestino, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Telegram-Init-Data': (tg && tg.initData) ? tg.initData : ''
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const resultado = await respuesta.json();
+
+            if (resultado && resultado.ok) {
+                ejecutarHaptico('success');
+                textoBotonConfirmar.textContent = '¡ORDEN REGISTRADA!';
+
+                if (tg) {
+                    setTimeout(() => {
+                        tg.close();
+                    }, 350);
+                }
+            } else {
+                ejecutarHaptico('error');
+                const detalleError = (resultado && resultado.error) ? resultado.error : 'No se pudo procesar la solicitud.';
+                alert(`⚠️ Error: ${detalleError}`);
+                btnConfirmarOperacion.disabled = false;
+                textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR MONTO';
             }
         } catch (error) {
-            console.warn("sendData omitido o no soportado en este contexto:", error);
-        }
-
-        // Cerrar la Mini App para regresar al chat con la confirmación
-        if (tg) {
-            setTimeout(() => {
-                tg.close();
-            }, 180);
+            console.error("Fallo en la comunicación con Vercel:", error);
+            ejecutarHaptico('error');
+            alert("⚠️ No hubo respuesta del servidor. Verifica tu conexión e intenta nuevamente.");
+            btnConfirmarOperacion.disabled = false;
+            textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR MONTO';
         }
     }
 

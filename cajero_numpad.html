@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Cajero P2P • Bingo Kaleido</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-main: #0c101a;
+            --bg-card: #161e31;
+            --bg-cell: #202b3f;
+            --border-cell: #2f3d59;
+            --accent-gold: #f59e0b;
+            --accent-gold-glow: rgba(245, 158, 11, 0.4);
+            --accent-green: #10b981;
+            --accent-red: #b91c1c;
+            --btn-blue: #1d5cb8;
+            --btn-blue-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: var(--tg-viewport-stable-height, 100dvh);
+            min-height: var(--tg-viewport-stable-height, 100dvh);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .viewport-lock {
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(8px, 1.6vh, 14px) clamp(10px, 2.5vw, 16px);
+            gap: clamp(6px, 1.2vh, 10px);
+        }
+
+        .header-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #7f1d1d 50%, #9a3412 100%);
+            border-radius: 12px;
+            padding: clamp(8px, 1.4vh, 12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: clamp(12px, 1.8vh, 14px);
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-badge {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--accent-gold);
+            color: #fef08a;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .display-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: clamp(10px, 1.8vh, 14px);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .display-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .amount-primary {
+            font-size: clamp(28px, 4.2vh, 36px);
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+
+        .amount-primary span {
+            color: var(--accent-gold);
+        }
+
+        .amount-secondary {
+            font-size: clamp(13px, 1.8vh, 15px);
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+
+        .quick-presets-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .preset-btn {
+            background: var(--bg-cell);
+            color: #ffffff;
+            border: 1px solid var(--border-cell);
+            padding: clamp(6px, 1.2vh, 8px) 0;
+            border-radius: 8px;
+            font-size: clamp(11px, 1.6vh, 12px);
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .preset-btn:active {
+            background: var(--btn-blue);
+            border-color: #60a5fa;
+        }
+
+        .numpad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(6px, 1.2vh, 8px);
+            flex: 1;
+            min-height: 0;
+        }
+
+        .num-key {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            color: #ffffff;
+            border-radius: 10px;
+            font-size: clamp(20px, 3vh, 26px);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .num-key:active {
+            transform: scale(0.96);
+            background: var(--bg-cell);
+        }
+
+        .num-key.del-key {
+            color: #f87171;
+            font-size: clamp(16px, 2.4vh, 20px);
+        }
+
+        .confirm-btn {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            border: 1px solid #60a5fa;
+            color: #ffffff;
+            padding: clamp(12px, 2vh, 15px) 0;
+            border-radius: 10px;
+            font-size: clamp(14px, 2vh, 16px);
+            font-weight: 900;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-shrink: 0;
+            transition: opacity 0.2s;
+        }
+
+        .confirm-btn:active {
+            transform: scale(0.98);
+        }
+
+        .confirm-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .toast-notify {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast-notify.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport-lock">
+        <header class="header-box">
+            <span class="header-title" id="txtTituloHeader">CAJERO P2P • RECARGA</span>
+            <span class="header-badge" id="txtTasaBadge">1 USKT = Bs. --</span>
+        </header>
+
+        <div class="display-container">
+            <span class="display-label" id="txtOperacionLabel">CANTIDAD A RECARGAR</span>
+            <div class="amount-primary">
+                <span id="valDisplayUSKT">0.00</span> USKT
+            </div>
+            <div class="amount-secondary" id="valDisplayBs">
+                ≈ Bs. 0.00
+            </div>
+        </div>
+
+        <div class="quick-presets-row" id="presetsRow"></div>
+
+        <div class="numpad-grid">
+            <button class="num-key" onclick="teclear('1')">1</button>
+            <button class="num-key" onclick="teclear('2')">2</button>
+            <button class="num-key" onclick="teclear('3')">3</button>
+            <button class="num-key" onclick="teclear('4')">4</button>
+            <button class="num-key" onclick="teclear('5')">5</button>
+            <button class="num-key" onclick="teclear('6')">6</button>
+            <button class="num-key" onclick="teclear('7')">7</button>
+            <button class="num-key" onclick="teclear('8')">8</button>
+            <button class="num-key" onclick="teclear('9')">9</button>
+            <button class="num-key" onclick="teclear('00')">00</button>
+            <button class="num-key" onclick="teclear('0')">0</button>
+            <button class="num-key del-key" onclick="teclear('del')">⌫</button>
+        </div>
+
+        <button class="confirm-btn" id="btnConfirmar" onclick="confirmarTransaccion()">
+            <span>✅</span> CONFIRMAR MONTO
+        </button>
+    </div>
+
+    <div class="toast-notify" id="toastNotify"></div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.enableClosingConfirmation();
+            tg.onEvent('viewportChanged', (e) => {
+                if (e.isStateStable) recalcularViewport();
+            });
+        }
+
+        function recalcularViewport() {
+            document.body.style.height = 'var(--tg-viewport-stable-height, 100dvh)';
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tipoOperacion = (urlParams.get('tipo') || 'deposito').toLowerCase();
+        const tasaCambioBs = parseFloat(urlParams.get('tasa')) || 40.0;
+        const saldoDisponible = parseFloat(urlParams.get('saldo')) || 0.0;
+        const BACKEND_URL = urlParams.get('api') || "";
+
+        let montoStrCentavos = "0";
+
+        const esDeposito = tipoOperacion === 'deposito';
+        document.getElementById('txtTituloHeader').innerText = esDeposito ? "CAJERO P2P • RECARGA" : "CAJERO P2P • LIQUIDAR";
+        document.getElementById('txtOperacionLabel').innerText = esDeposito ? "CANTIDAD A RECARGAR" : "CANTIDAD A RETIRAR";
+        document.getElementById('txtTasaBadge').innerText = `1 USKT = Bs. ${tasaCambioBs.toFixed(2)}`;
+
+        const presetsContainer = document.getElementById('presetsRow');
+        if (esDeposito) {
+            presetsContainer.innerHTML = `
+                <button class="preset-btn" onclick="sumarCentavos(499)">+4.99</button>
+                <button class="preset-btn" onclick="sumarCentavos(999)">+9.99</button>
+                <button class="preset-btn" onclick="sumarCentavos(1499)">+14.99</button>
+                <button class="preset-btn" onclick="sumarCentavos(1999)">+19.99</button>
+            `;
+        } else {
+            presetsContainer.innerHTML = `
+                <button class="preset-btn" style="grid-column: span 2;" onclick="setMontoDirecto(5.0)">MÍNIMO (5.00)</button>
+                <button class="preset-btn" style="grid-column: span 2; border-color: var(--accent-gold);" onclick="setMontoMaximo()">💰 TODO (${saldoDisponible.toFixed(2)})</button>
+            `;
+        }
+
+        function teclear(val) {
+            hapticFeedback('selection');
+            if (val === 'del') {
+                montoStrCentavos = montoStrCentavos.length > 1 ? montoStrCentavos.slice(0, -1) : "0";
+            } else if (val === '00') {
+                if (montoStrCentavos !== "0" && montoStrCentavos.length < 10) {
+                    montoStrCentavos += "00";
+                }
+            } else {
+                if (montoStrCentavos === "0") {
+                    montoStrCentavos = val;
+                } else if (montoStrCentavos.length < 10) {
+                    montoStrCentavos += val;
+                }
+            }
+            actualizarDisplay();
+        }
+
+        function sumarCentavos(centavos) {
+            hapticFeedback('impact');
+            const total = parseInt(montoStrCentavos, 10) + centavos;
+            montoStrCentavos = String(total);
+            actualizarDisplay();
+        }
+
+        function setMontoDirecto(valUSKT) {
+            hapticFeedback('impact');
+            montoStrCentavos = String(Math.round(valUSKT * 100));
+            actualizarDisplay();
+        }
+
+        function setMontoMaximo() {
+            hapticFeedback('impact');
+            montoStrCentavos = String(Math.round(saldoDisponible * 100));
+            actualizarDisplay();
+        }
+
+        function actualizarDisplay() {
+            const valorUSKT = parseInt(montoStrCentavos, 10) / 100;
+            const valorBs = valorUSKT * tasaCambioBs;
+
+            document.getElementById('valDisplayUSKT').innerText = valorUSKT.toFixed(2);
+            document.getElementById('valDisplayBs').innerText = `≈ Bs. ${valorBs.toFixed(2)}`;
+        }
+
+        async function confirmarTransaccion() {
+            const valorUSKT = parseInt(montoStrCentavos, 10) / 100;
+            const btn = document.getElementById('btnConfirmar');
+
+            if (valorUSKT <= 0.10) {
+                hapticFeedback('error');
+                mostrarToast("❌ El monto mínimo permitido es de 0.10 USKT");
+                return;
+            }
+
+            if (!esDeposito) {
+                if (valorUSKT < 5.0) {
+                    hapticFeedback('error');
+                    mostrarToast("❌ La liquidación mínima es de 5.00 USKT");
+                    return;
+                }
+                if (valorUSKT > saldoDisponible) {
+                    hapticFeedback('error');
+                    mostrarToast("❌ El monto supera tu saldo disponible");
+                    return;
+                }
+            }
+
+            btn.disabled = true;
+            btn.style.pointerEvents = 'none';
+            btn.innerText = "⏳ PROCESANDO...";
+            hapticFeedback('impact');
+
+            const payload = {
+                idempotency_key: crypto.randomUUID(),
+                monto_uskt: valorUSKT,
+                operacion: tipoOperacion
+            };
+
+            try {
+                const endpoint = `${BACKEND_URL}/api/cajero-submit`;
+                const resp = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Telegram-Init-Data': tg?.initData || ''
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const resData = await resp.json();
+                if (resData.ok) {
+                    hapticFeedback('success');
+                    mostrarToast("✅ Monto validado correctamente. Regresando al bot...");
+                    setTimeout(() => {
+                        if (tg) tg.close();
+                    }, 1200);
+                } else {
+                    hapticFeedback('error');
+                    mostrarToast(`⚠️ ${resData.error || 'Error al procesar monto'}`);
+                    btn.disabled = false;
+                    btn.style.pointerEvents = 'auto';
+                    btn.innerHTML = "<span>✅</span> CONFIRMAR MONTO";
+                }
+            } catch (err) {
+                console.error("Error en comunicación:", err);
+                hapticFeedback('error');
+                mostrarToast("⚠️ Error de conexión con el servidor");
+                btn.disabled = false;
+                btn.style.pointerEvents = 'auto';
+                btn.innerHTML = "<span>✅</span> CONFIRMAR MONTO";
+            }
+        }
+
+        function hapticFeedback(tipo) {
+            if (!tg?.HapticFeedback) return;
+            if (tipo === 'impact') tg.HapticFeedback.impactOccurred('medium');
+            else if (tipo === 'selection') tg.HapticFeedback.selectionChanged();
+            else if (tipo === 'success') tg.HapticFeedback.notificationOccurred('success');
+            else if (tipo === 'error') tg.HapticFeedback.notificationOccurred('error');
+        }
+
+        function mostrarToast(msj) {
+            const t = document.getElementById('toastNotify');
+            t.innerText = msj;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 2800);
+        }
+    </script>
+</body>
+</html>

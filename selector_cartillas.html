@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Selector de Cartillas • Bingo Kaleido</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-main: #0c101a;
+            --bg-card: #161e31;
+            --bg-cell: #202b3f;
+            --border-cell: #2f3d59;
+            --accent-gold: #f59e0b;
+            --accent-gold-glow: rgba(245, 158, 11, 0.4);
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --btn-blue: #1d5cb8;
+            --btn-blue-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: var(--tg-viewport-stable-height, 100dvh);
+            min-height: var(--tg-viewport-stable-height, 100dvh);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .viewport-lock {
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(8px, 1.6vh, 14px) clamp(10px, 2.5vw, 16px);
+            gap: clamp(6px, 1.2vh, 10px);
+        }
+
+        .header-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #7f1d1d 50%, #9a3412 100%);
+            border-radius: 12px;
+            padding: clamp(8px, 1.4vh, 12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: clamp(12px, 1.8vh, 14px);
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badge-vip-status {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--accent-gold);
+            color: #fef08a;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .selector-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 14px;
+            padding: clamp(10px, 1.8vh, 16px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(8px, 1.4vh, 14px);
+            flex: 1;
+            justify-content: center;
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .stepper-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .stepper-btn {
+            background: var(--bg-cell);
+            border: 1px solid var(--border-cell);
+            color: #ffffff;
+            width: clamp(44px, 6.5vh, 54px);
+            height: clamp(44px, 6.5vh, 54px);
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .stepper-btn:active {
+            transform: scale(0.92);
+            background: var(--btn-blue);
+            border-color: #60a5fa;
+        }
+
+        .quantity-display {
+            font-size: clamp(38px, 6vh, 52px);
+            font-weight: 900;
+            color: var(--accent-gold);
+            min-width: 80px;
+            text-align: center;
+            text-shadow: 0 0 16px var(--accent-gold-glow);
+            line-height: 1;
+        }
+
+        .slider-wrapper {
+            width: 100%;
+            padding: 0 8px;
+        }
+
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: var(--bg-cell);
+            outline: none;
+            border: 1px solid var(--border-cell);
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+        }
+
+        .quick-chips-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            width: 100%;
+        }
+
+        .chip-btn {
+            background: var(--bg-cell);
+            border: 1px solid var(--border-cell);
+            color: #ffffff;
+            padding: 8px 0;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .chip-btn.active {
+            background: var(--btn-blue);
+            border-color: #60a5fa;
+        }
+
+        .financial-summary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: clamp(10px, 1.6vh, 14px);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .summary-row.highlight {
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: 900;
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .summary-row.highlight span:last-child {
+            color: var(--accent-gold);
+        }
+
+        .confirm-btn {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            border: 1px solid #60a5fa;
+            color: #ffffff;
+            padding: clamp(12px, 2vh, 15px) 0;
+            border-radius: 10px;
+            font-size: clamp(13px, 1.9vh, 15px);
+            font-weight: 900;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-shrink: 0;
+            transition: opacity 0.2s;
+        }
+
+        .confirm-btn:active {
+            transform: scale(0.98);
+        }
+
+        .confirm-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+            filter: grayscale(0.8);
+        }
+
+        .toast-notify {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast-notify.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport-lock">
+        <header class="header-box">
+            <span class="header-title">ADQUIRIR CARTILLAS</span>
+            <span class="badge-vip-status" id="badgeVipStatus">PLAN NORMAL</span>
+        </header>
+
+        <div class="selector-card">
+            <span class="card-label">CANTIDAD DE CARTILLAS</span>
+
+            <div class="stepper-container">
+                <button class="stepper-btn" onclick="modificarCantidad(-1)">−</button>
+                <div class="quantity-display" id="displayCantidad">1</div>
+                <button class="stepper-btn" onclick="modificarCantidad(1)">+</button>
+            </div>
+
+            <div class="slider-wrapper">
+                <input type="range" class="range-slider" id="sliderCantidad" min="1" max="5" value="1" oninput="sincronizarSlider(this.value)">
+            </div>
+
+            <div class="quick-chips-grid" id="chipsGrid"></div>
+        </div>
+
+        <div class="financial-summary">
+            <div class="summary-row">
+                <span>Precio por Cartilla:</span>
+                <span>0.50 USKT</span>
+            </div>
+            <div class="summary-row">
+                <span>Tu Saldo Actual:</span>
+                <span id="txtSaldoActual">0.00 USKT</span>
+            </div>
+            <div class="summary-row">
+                <span>Saldo Posterior:</span>
+                <span id="txtSaldoPosterior">0.00 USKT</span>
+            </div>
+            <div class="summary-row highlight">
+                <span>TOTAL A PAGAR:</span>
+                <span id="txtTotalPagar">0.50 USKT</span>
+            </div>
+        </div>
+
+        <button class="confirm-btn" id="btnConfirmar" onclick="confirmarCompra()">
+            <span>🎟️</span> CONFIRMAR Y ADQUIRIR
+        </button>
+    </div>
+
+    <div class="toast-notify" id="toastNotify"></div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.enableClosingConfirmation();
+            tg.onEvent('viewportChanged', (e) => {
+                if (e.isStateStable) document.body.style.height = 'var(--tg-viewport-stable-height, 100dvh)';
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const saldoDisponible = parseFloat(urlParams.get('saldo')) || 0.0;
+        const esVip = (urlParams.get('vip') || '').toLowerCase() === 'si';
+        const BACKEND_URL = urlParams.get('api') || "";
+
+        const PRECIO_UNITARIO = 0.50;
+        const LIMITE_MAX = esVip ? 20 : 5;
+        let cantidadActual = 1;
+
+        // Configuración de badges y límites
+        const badgeVip = document.getElementById('badgeVipStatus');
+        const slider = document.getElementById('sliderCantidad');
+        slider.max = LIMITE_MAX;
+
+        if (esVip) {
+            badgeVip.innerText = "⭐ VIP (MÁX 20)";
+            badgeVip.style.borderColor = "var(--accent-gold)";
+        } else {
+            badgeVip.innerText = "JUGADOR (MÁX 5)";
+            badgeVip.style.borderColor = "var(--border-cell)";
+        }
+
+        // Generar botones rápidos
+        const chipsContainer = document.getElementById('chipsGrid');
+        const valoresChips = esVip ? [1, 5, 10, 15, 20] : [1, 2, 3, 4, 5];
+        chipsContainer.innerHTML = valoresChips.map(v => 
+            `<button class="chip-btn ${v === 1 ? 'active' : ''}" onclick="fijarCantidad(${v})">${v}</button>`
+        ).join('');
+
+        function modificarCantidad(delta) {
+            hapticFeedback('selection');
+            let nueva = cantidadActual + delta;
+            if (nueva < 1) nueva = 1;
+            if (nueva > LIMITE_MAX) nueva = LIMITE_MAX;
+            fijarCantidad(nueva);
+        }
+
+        function sincronizarSlider(val) {
+            fijarCantidad(parseInt(val, 10));
+        }
+
+        function fijarCantidad(val) {
+            cantidadActual = val;
+            slider.value = cantidadActual;
+            document.getElementById('displayCantidad').innerText = cantidadActual;
+
+            // Actualizar chips activos
+            const chips = chipsContainer.querySelectorAll('.chip-btn');
+            chips.forEach(c => {
+                c.classList.toggle('active', parseInt(c.innerText, 10) === cantidadActual);
+            });
+
+            actualizarResumen();
+        }
+
+        function actualizarResumen() {
+            const total = cantidadActual * PRECIO_UNITARIO;
+            const restante = saldoDisponible - total;
+
+            document.getElementById('txtSaldoActual').innerText = `${saldoDisponible.toFixed(2)} USKT`;
+            document.getElementById('txtTotalPagar').innerText = `${total.toFixed(2)} USKT`;
+
+            const txtRestante = document.getElementById('txtSaldoPosterior');
+            txtRestante.innerText = `${restante.toFixed(2)} USKT`;
+
+            const btn = document.getElementById('btnConfirmar');
+            if (restante < 0) {
+                txtRestante.style.color = "var(--accent-red)";
+                btn.disabled = true;
+                btn.innerHTML = "<span>⚠️</span> SALDO INSUFICIENTE";
+            } else {
+                txtRestante.style.color = "var(--accent-green)";
+                btn.disabled = false;
+                btn.innerHTML = `<span>🎟️</span> ADQUIRIR ${cantidadActual} CARTILLA${cantidadActual > 1 ? 'S' : ''}`;
+            }
+        }
+
+        async function confirmarCompra() {
+            const total = cantidadActual * PRECIO_UNITARIO;
+            const btn = document.getElementById('btnConfirmar');
+
+            if (total > saldoDisponible) {
+                hapticFeedback('error');
+                mostrarToast("❌ Saldo insuficiente en tu cuenta");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.style.pointerEvents = 'none';
+            btn.innerText = "⏳ ASIGNANDO CARTILLAS...";
+            hapticFeedback('impact');
+
+            const payload = {
+                idempotency_key: crypto.randomUUID(),
+                cantidad: cantidadActual
+            };
+
+            try {
+                const endpoint = `${BACKEND_URL}/api/comprar-cartillas`;
+                const resp = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Telegram-Init-Data': tg?.initData || ''
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const resData = await resp.json();
+                if (resData.ok) {
+                    hapticFeedback('success');
+                    mostrarToast(`✅ ¡${cantidadActual} cartilla(s) adquiridas con éxito!`);
+                    setTimeout(() => {
+                        if (tg) tg.close();
+                    }, 1200);
+                } else {
+                    hapticFeedback('error');
+                    mostrarToast(`⚠️ ${resData.error || 'Error al procesar la compra'}`);
+                    btn.disabled = false;
+                    btn.style.pointerEvents = 'auto';
+                    actualizarResumen();
+                }
+            } catch (err) {
+                console.error("Error comunicando compra:", err);
+                hapticFeedback('error');
+                mostrarToast("⚠️ Error de conexión con el servidor");
+                btn.disabled = false;
+                btn.style.pointerEvents = 'auto';
+                actualizarResumen();
+            }
+        }
+
+        function hapticFeedback(tipo) {
+            if (!tg?.HapticFeedback) return;
+            if (tipo === 'impact') tg.HapticFeedback.impactOccurred('medium');
+            else if (tipo === 'selection') tg.HapticFeedback.selectionChanged();
+            else if (tipo === 'success') tg.HapticFeedback.notificationOccurred('success');
+            else if (tipo === 'error') tg.HapticFeedback.notificationOccurred('error');
+        }
+
+        function mostrarToast(msj) {
+            const t = document.getElementById('toastNotify');
+            t.innerText = msj;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 2800);
+        }
+
+        actualizarResumen();
+    </script>
+</body>
+</html>

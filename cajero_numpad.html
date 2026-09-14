@@ -579,7 +579,6 @@
         btnConfirmarOperacion.disabled = true;
         textoBotonConfirmar.textContent = 'PROCESANDO...';
 
-        // Determinar montos normalizados
         let montoFinalUSKT = 0;
         let montoFinalBS = 0;
 
@@ -591,6 +590,7 @@
             montoFinalUSKT = TASA_CAMBIO > 0 ? (valorActual / TASA_CAMBIO) : 0;
         }
 
+        const rawInitData = (tg && tg.initData) ? tg.initData : '';
         const idempotencyKey = (typeof crypto !== 'undefined' && crypto.randomUUID)
             ? crypto.randomUUID()
             : (`p2p_${Date.now()}_${Math.floor(Math.random() * 1000000)}`);
@@ -603,10 +603,10 @@
             monto_uskt: parseFloat(montoFinalUSKT.toFixed(2)),
             monto_bs: parseFloat(montoFinalBS.toFixed(2)),
             tasa: parseFloat(TASA_CAMBIO.toFixed(2)),
-            idempotency_key: idempotencyKey
+            idempotency_key: idempotencyKey,
+            init_data: rawInitData
         };
 
-        // URL base con respaldo directo a Vercel en caso de no venir por parámetro
         const urlBaseVercel = apiUrlParam || 'https://bingo-kalei-ve.vercel.app';
         const endpointDestino = `${urlBaseVercel.replace(/\/$/, '')}/api/cajero-submit`;
 
@@ -615,14 +615,19 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Telegram-Init-Data': (tg && tg.initData) ? tg.initData : ''
+                    'X-Telegram-Init-Data': rawInitData
                 },
                 body: JSON.stringify(payload)
             });
 
-            const resultado = await respuesta.json();
+            let resultado = null;
+            try {
+                resultado = await respuesta.json();
+            } catch (e) {
+                resultado = null;
+            }
 
-            if (resultado && resultado.ok) {
+            if (respuesta.ok && resultado && resultado.ok) {
                 ejecutarHaptico('success');
                 textoBotonConfirmar.textContent = '¡ORDEN REGISTRADA!';
 
@@ -633,15 +638,16 @@
                 }
             } else {
                 ejecutarHaptico('error');
-                const detalleError = (resultado && resultado.error) ? resultado.error : 'No se pudo procesar la solicitud.';
-                alert(`⚠️ Error: ${detalleError}`);
+                const detalleError = (resultado && (resultado.error || resultado.detail))
+                    || `Error de servidor (${respuesta.status})`;
+                alert(`⚠️ ${detalleError}`);
                 btnConfirmarOperacion.disabled = false;
                 textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR MONTO';
             }
         } catch (error) {
-            console.error("Fallo en la comunicación con Vercel:", error);
+            console.error("Fallo de red o CORS al contactar Vercel:", error);
             ejecutarHaptico('error');
-            alert("⚠️ No hubo respuesta del servidor. Verifica tu conexión e intenta nuevamente.");
+            alert(`⚠️ Error de red o conexión: ${error.message || 'Sin respuesta'}`);
             btnConfirmarOperacion.disabled = false;
             textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR MONTO';
         }

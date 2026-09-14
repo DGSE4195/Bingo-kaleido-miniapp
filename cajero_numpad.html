@@ -15,16 +15,19 @@
         :root {
             --bg-principal: #0b0f19;
             --tarjeta-bg: #131a2a;
+            --tarjeta-hover: #1c263c;
             --tecla-bg: #182236;
             --tecla-hover: #22304c;
             --oro-primario: #ffc857;
             --oro-gradiente: linear-gradient(135deg, #ffc857 0%, #e5a93c 100%);
             --azul-boton: #2563eb;
             --azul-gradiente: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            --texto-principal: #ffffff;
             --texto-apagado: #94a3b8;
             --borde-suave: rgba(255, 255, 255, 0.08);
             --borde-activo: rgba(255, 200, 87, 0.45);
             --rojo-borrar: #ef4444;
+            --verde-exito: #10b981;
             --altura-pantalla: var(--tg-viewport-stable-height, 100vh);
         }
 
@@ -40,7 +43,7 @@
 
         body, html {
             background-color: var(--bg-principal);
-            color: #ffffff;
+            color: var(--texto-principal);
             height: var(--altura-pantalla);
             min-height: var(--altura-pantalla);
             width: 100%;
@@ -57,7 +60,7 @@
             padding: 12px 16px 14px 16px;
         }
 
-        /* 1. Encabezado de la Operación y Tasa Oficial */
+        /* 1. Encabezado e Indicador de Pasos */
         .header-cajero {
             display: flex;
             align-items: center;
@@ -66,7 +69,7 @@
             border: 1px solid var(--borde-suave);
             border-radius: 12px;
             padding: 8px 12px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .header-titulo {
@@ -91,7 +94,155 @@
             letter-spacing: 0.3px;
         }
 
-        /* 2. Switch Segmentado Bimonetario (USKT vs. Bs) */
+        .pasos-indicador {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .paso-punto {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--borde-suave);
+            transition: all 0.3s ease;
+        }
+
+        .paso-punto.activo {
+            width: 24px;
+            border-radius: 4px;
+            background: var(--oro-primario);
+        }
+
+        /* 2. Estructura de Pantallas del Asistente */
+        .paso-contenedor {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .paso-contenedor.activo {
+            display: flex;
+        }
+
+        /* 3. Estilos Paso 1: Selección de Canal */
+        .titulo-seccion {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--oro-primario);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .metodos-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tarjeta-metodo {
+            background: var(--tarjeta-bg);
+            border: 1px solid var(--borde-suave);
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tarjeta-metodo:active {
+            transform: scale(0.98);
+            border-color: var(--oro-primario);
+            background: var(--tarjeta-hover);
+        }
+
+        .icono-metodo {
+            font-size: 28px;
+        }
+
+        .info-metodo h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .info-metodo p {
+            font-size: 11px;
+            color: var(--texto-apagado);
+        }
+
+        /* 4. Estilos Paso 2: Formulario de Datos de Origen */
+        .formulario-datos {
+            background: var(--tarjeta-bg);
+            border: 1px solid var(--borde-suave);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .grupo-input {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .grupo-input label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--texto-apagado);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-cajero, .select-cajero {
+            background: #0b0f19;
+            border: 1px solid var(--borde-suave);
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            width: 100%;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .input-cajero:focus, .select-cajero:focus {
+            border-color: var(--oro-primario);
+        }
+
+        .checkbox-contenedor {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+            cursor: pointer;
+        }
+
+        .checkbox-contenedor input {
+            accent-color: var(--oro-primario);
+            width: 15px;
+            height: 15px;
+        }
+
+        .checkbox-contenedor span {
+            font-size: 11px;
+            color: var(--texto-apagado);
+            font-weight: 600;
+        }
+
+        /* 5. Estilos Paso 3: Visor, Atajos y Numpad */
         .switch-moneda-container {
             display: flex;
             background: rgba(0, 0, 0, 0.45);
@@ -99,23 +250,23 @@
             border-radius: 10px;
             padding: 3px;
             gap: 4px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .btn-switch {
             flex: 1;
-            padding: 7px 10px;
+            padding: 6px 10px;
             border-radius: 8px;
             border: 1px solid transparent;
             background: transparent;
             color: var(--texto-apagado);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             transition: all 0.2s ease;
         }
 
@@ -123,74 +274,70 @@
             background: rgba(255, 200, 87, 0.16);
             color: var(--oro-primario);
             border-color: var(--borde-activo);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
         }
 
-        /* 3. Visor Jerárquico de Cantidades */
         .visor-monto {
             background: var(--tarjeta-bg);
             border: 1px solid var(--borde-suave);
             border-radius: 14px;
-            padding: 10px 14px;
+            padding: 8px 12px;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .visor-etiqueta {
-            font-size: 9.5px;
+            font-size: 9px;
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
             color: var(--texto-apagado);
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .visor-cifra-principal {
-            font-size: 30px;
+            font-size: 26px;
             font-weight: 800;
             color: var(--oro-primario);
             line-height: 1.15;
             letter-spacing: 0.5px;
-            word-break: break-all;
         }
 
         .visor-cifra-secundaria {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--texto-apagado);
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
-        /* 4. Atajos Pedagógicos de Selección Rápida con Decimales */
         .atajos-contenedor {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .atajos-etiqueta {
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 800;
             letter-spacing: 0.8px;
             text-transform: uppercase;
             color: var(--texto-apagado);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .atajos-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
+            gap: 5px;
         }
 
         .btn-atajo {
             background: var(--tecla-bg);
             border: 1px solid var(--borde-suave);
             border-radius: 8px;
-            padding: 7px 2px;
+            padding: 6px 2px;
             color: #f1f5f9;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
             text-align: center;
             cursor: pointer;
@@ -203,21 +350,20 @@
             background: rgba(255, 200, 87, 0.14);
         }
 
-        /* 5. Numpad Táctil Compacto y Ergonómico (48px de altura) */
         .numpad-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 7px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
 
         .tecla {
-            height: 48px;
+            height: 46px;
             background: var(--tecla-bg);
             border: 1px solid var(--borde-suave);
             border-radius: 10px;
             color: #ffffff;
-            font-size: 21px;
+            font-size: 20px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -233,32 +379,50 @@
         }
 
         .tecla.tecla-doble-cero {
-            font-size: 18px;
-            letter-spacing: -0.5px;
+            font-size: 17px;
         }
 
         .tecla.tecla-borrar {
             color: var(--rojo-borrar);
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        /* 6. Botones de Navegación y Confirmación */
+        .botones-accion-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-secundario {
+            height: 46px;
+            flex: 0 0 75px;
+            background: #1e293b;
+            border: 1px solid var(--borde-suave);
+            border-radius: 12px;
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-transform: uppercase;
         }
 
-        .icono-borrar {
-            width: 22px;
-            height: 22px;
-            stroke-width: 2.2;
+        .btn-secundario:active {
+            transform: scale(0.96);
         }
 
-        /* 6. Botón Nuclear de Confirmación */
-        .btn-confirmar {
-            height: 48px;
-            width: 100%;
+        .btn-principal {
+            height: 46px;
+            flex: 1;
             background: var(--azul-gradiente);
             border: none;
             border-radius: 12px;
             color: #ffffff;
-            font-size: 14.5px;
+            font-size: 13.5px;
             font-weight: 800;
             letter-spacing: 0.6px;
             text-transform: uppercase;
@@ -266,17 +430,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+            gap: 6px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
             transition: opacity 0.2s ease, transform 0.1s ease;
         }
 
-        .btn-confirmar:active {
+        .btn-principal:active {
             transform: scale(0.98);
         }
 
-        .btn-confirmar:disabled {
-            opacity: 0.5;
+        .btn-principal:disabled {
+            opacity: 0.45;
             cursor: not-allowed;
             box-shadow: none;
             transform: none;
@@ -286,7 +450,7 @@
 <body>
 
 <div class="app-container">
-    <!-- Encabezado con Operación Dinámica y Tasa -->
+    <!-- Encabezado con Operación y Tasa -->
     <header class="header-cajero">
         <div class="header-titulo" id="encabezadoTitulo">
             <span>🏦</span>
@@ -297,67 +461,168 @@
         </div>
     </header>
 
-    <!-- Barra de Alternancia Bimonetaria -->
-    <section class="switch-moneda-container">
-        <button type="button" class="btn-switch activo" id="btnModoUSKT" onclick="cambiarModoMoneda('USKT')">
-            <span>🟡</span>
-            <span>USKT</span>
-        </button>
-        <button type="button" class="btn-switch" id="btnModoBS" onclick="cambiarModoMoneda('BS')">
-            <span>🇻🇪</span>
-            <span>Bolívares (Bs)</span>
-        </button>
-    </section>
+    <!-- Indicador de Progreso (Paso 1, 2, 3) -->
+    <nav class="pasos-indicador">
+        <div class="paso-punto activo" id="puntoPaso1"></div>
+        <div class="paso-punto" id="puntoPaso2"></div>
+        <div class="paso-punto" id="puntoPaso3"></div>
+    </nav>
 
-    <!-- Pantalla Visor de Cifras -->
-    <section class="visor-monto">
-        <div class="visor-etiqueta" id="etiquetaVisor">CANTIDAD A RECARGAR</div>
-        <div class="visor-cifra-principal" id="cifraPrincipal">0.00 USKT</div>
-        <div class="visor-cifra-secundaria" id="cifraSecundaria">≈ Bs. 0.00</div>
-    </section>
+    <!-- ========================================================= -->
+    <!-- PASO 1: SELECCIÓN DEL CANAL DE PAGO                       -->
+    <!-- ========================================================= -->
+    <section class="paso-contenedor activo" id="vistaPaso1">
+        <div>
+            <div class="titulo-seccion">Selecciona el Canal de Pago</div>
+            <div class="metodos-grid">
+                <div class="tarjeta-metodo" onclick="seleccionarCanal('pagomovil')">
+                    <span class="icono-metodo">📱</span>
+                    <div class="info-metodo">
+                        <h4>Pago Móvil (Bolívares)</h4>
+                        <p>Transferencia instantánea con bancos nacionales en VES</p>
+                    </div>
+                </div>
 
-    <!-- Bloque Pedagógico de Atajos Rápidos con Decimales -->
-    <section class="atajos-contenedor">
-        <div class="atajos-etiqueta">
-            <span>⚡</span>
-            <span>MONTOS RÁPIDOS SUGERIDOS</span>
+                <div class="tarjeta-metodo" onclick="seleccionarCanal('binance')">
+                    <span class="icono-metodo">🟡</span>
+                    <div class="info-metodo">
+                        <h4>Binance Pay (USDT)</h4>
+                        <p>Transferencia directa sin comisiones (1 USDT = 1 USKT)</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="atajos-grid">
-            <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(4.99)">+4.99 USKT</button>
-            <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(9.99)">+9.99 USKT</button>
-            <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(14.99)">+14.99 USKT</button>
-            <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(19.99)">+19.99 USKT</button>
+        <div><!-- Espacio reservado para balance visual --></div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- PASO 2: DATOS DE ORIGEN DEL JUGADOR                       -->
+    <!-- ========================================================= -->
+    <section class="paso-contenedor" id="vistaPaso2">
+        <div class="formulario-datos">
+            <div class="titulo-seccion" id="tituloFormulario">Datos de tu Cuenta</div>
+
+            <!-- Campos específicos para Pago Móvil -->
+            <div id="bloqueFormPagoMovil" style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="grupo-input">
+                    <label>Banco Emisor</label>
+                    <select class="select-cajero" id="inputBanco">
+                        <option value="0102 - Banco de Venezuela">0102 - Banco de Venezuela</option>
+                        <option value="0134 - Banesco">0134 - Banesco</option>
+                        <option value="0105 - Mercantil">0105 - Mercantil</option>
+                        <option value="0108 - Provincial">0108 - Provincial</option>
+                        <option value="0163 - Bancamiga">0163 - Bancamiga</option>
+                        <option value="0172 - Bancaribe">0172 - Bancaribe</option>
+                        <option value="0114 - Bancaribe">0114 - Bancaribe</option>
+                        <option value="0116 - B.O.D.">0116 - B.O.D.</option>
+                        <option value="0128 - Banco Caroní">0128 - Banco Caroní</option>
+                        <option value="0151 - BFC Banco Fondo Común">0151 - BFC Banco Fondo Común</option>
+                        <option value="0171 - Banco Activo">0171 - Banco Activo</option>
+                        <option value="0175 - Banco Bicentenario">0175 - Banco Bicentenario</option>
+                        <option value="0177 - BANFANB">0177 - BANFANB</option>
+                        <option value="0191 - BNC Banco Nacional de Crédito">0191 - BNC Banco Nacional de Crédito</option>
+                    </select>
+                </div>
+
+                <div class="grupo-input">
+                    <label>Teléfono Origen</label>
+                    <input type="tel" class="input-cajero" id="inputTelefono" placeholder="Ej: 04141234567" maxlength="11" />
+                </div>
+
+                <div class="grupo-input">
+                    <label>Cédula o RIF del Titular</label>
+                    <input type="text" class="input-cajero" id="inputCedula" placeholder="Ej: V-12345678" maxlength="12" />
+                </div>
+            </div>
+
+            <!-- Campos específicos para Binance Pay -->
+            <div id="bloqueFormBinance" style="display: none; flex-direction: column; gap: 10px;">
+                <div class="grupo-input">
+                    <label>Binance Pay ID / Correo</label>
+                    <input type="text" class="input-cajero" id="inputBinanceId" placeholder="Ej: 198273645 o correo@gmail.com" maxlength="40" />
+                </div>
+            </div>
+
+            <label class="checkbox-contenedor">
+                <input type="checkbox" id="chkGuardarCuenta" checked />
+                <span>Guardar esta cuenta para futuras operaciones</span>
+            </label>
+        </div>
+
+        <div class="botones-accion-row">
+            <button type="button" class="btn-secundario" onclick="irAlPaso(1)">⬅️ Atrás</button>
+            <button type="button" class="btn-principal" onclick="validarYContinuarPaso2()">Continuar ➡️</button>
         </div>
     </section>
 
-    <!-- Numpad Táctil Ergonómico (48px de altura por tecla) -->
-    <section class="numpad-grid">
-        <button type="button" class="tecla" onclick="presionarDigito('1')">1</button>
-        <button type="button" class="tecla" onclick="presionarDigito('2')">2</button>
-        <button type="button" class="tecla" onclick="presionarDigito('3')">3</button>
+    <!-- ========================================================= -->
+    <!-- PASO 3: ENTRADA DEL MONTO (NUMPAD COMPACTO)               -->
+    <!-- ========================================================= -->
+    <section class="paso-contenedor" id="vistaPaso3">
+        <div>
+            <!-- Alternancia Bimonetaria (Solo visible en Pago Móvil) -->
+            <div class="switch-moneda-container" id="contenedorSwitchMoneda">
+                <button type="button" class="btn-switch activo" id="btnModoBS" onclick="cambiarModoMoneda('BS')">
+                    <span>🇻🇪</span>
+                    <span>Bolívares (Bs)</span>
+                </button>
+                <button type="button" class="btn-switch" id="btnModoUSKT" onclick="cambiarModoMoneda('USKT')">
+                    <span>🟡</span>
+                    <span>USKT</span>
+                </button>
+            </div>
 
-        <button type="button" class="tecla" onclick="presionarDigito('4')">4</button>
-        <button type="button" class="tecla" onclick="presionarDigito('5')">5</button>
-        <button type="button" class="tecla" onclick="presionarDigito('6')">6</button>
+            <!-- Pantalla Visor de Cifras -->
+            <div class="visor-monto">
+                <div class="visor-etiqueta" id="etiquetaVisor">CANTIDAD A RECARGAR</div>
+                <div class="visor-cifra-principal" id="cifraPrincipal">Bs. 0.00</div>
+                <div class="visor-cifra-secundaria" id="cifraSecundaria">≈ 0.00 USKT</div>
+            </div>
 
-        <button type="button" class="tecla" onclick="presionarDigito('7')">7</button>
-        <button type="button" class="tecla" onclick="presionarDigito('8')">8</button>
-        <button type="button" class="tecla" onclick="presionarDigito('9')">9</button>
+            <!-- Atajos Pedagógicos -->
+            <div class="atajos-contenedor">
+                <div class="atajos-etiqueta">
+                    <span>⚡</span>
+                    <span>MONTOS RÁPIDOS SUGERIDOS</span>
+                </div>
+                <div class="atajos-grid">
+                    <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(4.99)">+4.99 USKT</button>
+                    <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(9.99)">+9.99 USKT</button>
+                    <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(14.99)">+14.99 USKT</button>
+                    <button type="button" class="btn-atajo" onclick="agregarAtajoRapido(19.99)">+19.99 USKT</button>
+                </div>
+            </div>
 
-        <button type="button" class="tecla tecla-doble-cero" onclick="presionarDobleCero()">00</button>
-        <button type="button" class="tecla" onclick="presionarDigito('0')">0</button>
-        <button type="button" class="tecla tecla-borrar" onclick="presionarBorrar()" style="font-size: 26px; line-height: 1;">⌫</button>
+            <!-- Numpad Táctil Ergonómico (46px) -->
+            <div class="numpad-grid">
+                <button type="button" class="tecla" onclick="presionarDigito('1')">1</button>
+                <button type="button" class="tecla" onclick="presionarDigito('2')">2</button>
+                <button type="button" class="tecla" onclick="presionarDigito('3')">3</button>
+
+                <button type="button" class="tecla" onclick="presionarDigito('4')">4</button>
+                <button type="button" class="tecla" onclick="presionarDigito('5')">5</button>
+                <button type="button" class="tecla" onclick="presionarDigito('6')">6</button>
+
+                <button type="button" class="tecla" onclick="presionarDigito('7')">7</button>
+                <button type="button" class="tecla" onclick="presionarDigito('8')">8</button>
+                <button type="button" class="tecla" onclick="presionarDigito('9')">9</button>
+
+                <button type="button" class="tecla tecla-doble-cero" onclick="presionarDobleCero()">00</button>
+                <button type="button" class="tecla" onclick="presionarDigito('0')">0</button>
+                <button type="button" class="tecla tecla-borrar" onclick="presionarBorrar()">⌫</button>
+            </div>
+        </div>
+
+        <div class="botones-accion-row">
+            <button type="button" class="btn-secundario" onclick="irAlPaso(2)">⬅️ Datos</button>
+            <button type="button" class="btn-principal" id="btnConfirmarOperacion" onclick="procesarConfirmacion()">
+                <span>✅</span>
+                <span id="textoBotonConfirmar">CONFIRMAR ORDEN</span>
+            </button>
+        </div>
     </section>
-
-    <!-- Botón de Confirmación y Despacho -->
-    <footer>
-        <button type="button" class="btn-confirmar" id="btnConfirmarOperacion" onclick="procesarConfirmacion()">
-            <span>✅</span>
-            <span id="textoBotonConfirmar">CONFIRMAR MONTO</span>
-        </button>
-    </footer>
 </div> <!-- Fin de app-container -->
-    <script>
+<script>
     // =========================================================
     // 1. INICIALIZACIÓN DE TELEGRAM WEBAPP Y VARIABLES GLOBALES
     // =========================================================
@@ -369,25 +634,48 @@
         tg.enableClosingConfirmation();
     }
 
-    // Parámetros dinámicos desde la URL
+    // Parámetros de entorno desde la URL
     const urlParams = new URLSearchParams(window.location.search);
     const tipoOperacion = (urlParams.get('tipo') || urlParams.get('modo') || 'recarga').toLowerCase();
     const tasaParam = parseFloat(urlParams.get('tasa')) || 946.30;
-    const apiUrlParam = urlParams.get('api_url') || '';
+    const apiUrlParam = urlParams.get('api_url') || 'https://bingo-kalei-ve.vercel.app';
 
-    // Estado interno del cajero
+    // Estados del Asistente Multipasos
+    let pasoActual = 1;
+    let canalSeleccionado = null; // 'pagomovil' o 'binance'
     let TASA_CAMBIO = tasaParam;
-    let modoMoneda = 'USKT'; // 'USKT' o 'BS'
-    let bufferCéntimos = "0"; // Almacena los dígitos en céntimos (modo cajero ATM)
+    let modoMoneda = 'BS'; // 'BS' o 'USKT'
+    let bufferCentimos = "0";
 
-    // Referencias a elementos del DOM
+    // Referencias al DOM - Encabezado y Navegación
     const textoOperacion = document.getElementById('textoOperacion');
     const badgeTasaReferencial = document.getElementById('badgeTasaReferencial');
+    const puntoPaso1 = document.getElementById('puntoPaso1');
+    const puntoPaso2 = document.getElementById('puntoPaso2');
+    const puntoPaso3 = document.getElementById('puntoPaso3');
+
+    // Referencias al DOM - Pantallas
+    const vistaPaso1 = document.getElementById('vistaPaso1');
+    const vistaPaso2 = document.getElementById('vistaPaso2');
+    const vistaPaso3 = document.getElementById('vistaPaso3');
+
+    // Referencias al DOM - Formulario Paso 2
+    const tituloFormulario = document.getElementById('tituloFormulario');
+    const bloqueFormPagoMovil = document.getElementById('bloqueFormPagoMovil');
+    const bloqueFormBinance = document.getElementById('bloqueFormBinance');
+    const inputBanco = document.getElementById('inputBanco');
+    const inputTelefono = document.getElementById('inputTelefono');
+    const inputCedula = document.getElementById('inputCedula');
+    const inputBinanceId = document.getElementById('inputBinanceId');
+    const chkGuardarCuenta = document.getElementById('chkGuardarCuenta');
+
+    // Referencias al DOM - Calculadora Paso 3
+    const contenedorSwitchMoneda = document.getElementById('contenedorSwitchMoneda');
+    const btnModoBS = document.getElementById('btnModoBS');
+    const btnModoUSKT = document.getElementById('btnModoUSKT');
     const etiquetaVisor = document.getElementById('etiquetaVisor');
     const cifraPrincipal = document.getElementById('cifraPrincipal');
     const cifraSecundaria = document.getElementById('cifraSecundaria');
-    const btnModoUSKT = document.getElementById('btnModoUSKT');
-    const btnModoBS = document.getElementById('btnModoBS');
     const btnConfirmarOperacion = document.getElementById('btnConfirmarOperacion');
     const textoBotonConfirmar = document.getElementById('textoBotonConfirmar');
 
@@ -404,10 +692,10 @@
         } else {
             textoOperacion.textContent = 'CAJERO P2P • RECARGA';
             etiquetaVisor.textContent = 'CANTIDAD A RECARGAR';
-            textoBotonConfirmar.textContent = 'CONFIRMAR MONTO';
+            textoBotonConfirmar.textContent = 'CONFIRMAR RECARGA';
         }
 
-        actualizarVisualizador();
+        irAlPaso(1);
     }
 
     // =========================================================
@@ -424,36 +712,132 @@
     }
 
     // =========================================================
-    // 4. CÁLCULO Y RENDERIZADO DEL VISOR JERÁRQUICO
+    // 4. CONTROL DE PANTALLAS (PASOS 1, 2 Y 3)
+    // =========================================================
+    function irAlPaso(nuevoPaso) {
+        ejecutarHaptico('light');
+        pasoActual = nuevoPaso;
+
+        // Gestión visual de contenedores
+        vistaPaso1.classList.remove('activo');
+        vistaPaso2.classList.remove('activo');
+        vistaPaso3.classList.remove('activo');
+
+        puntoPaso1.classList.remove('activo');
+        puntoPaso2.classList.remove('activo');
+        puntoPaso3.classList.remove('activo');
+
+        if (pasoActual === 1) {
+            vistaPaso1.classList.add('activo');
+            puntoPaso1.classList.add('activo');
+        } else if (pasoActual === 2) {
+            vistaPaso2.classList.add('activo');
+            puntoPaso2.classList.add('activo');
+        } else if (pasoActual === 3) {
+            vistaPaso3.classList.add('activo');
+            puntoPaso3.classList.add('activo');
+            actualizarVisualizador();
+        }
+    }
+
+    // =========================================================
+    // 5. PASO 1: SELECCIÓN DEL CANAL DE PAGO
+    // =========================================================
+    function seleccionarCanal(canal) {
+        ejecutarHaptico('medium');
+        canalSeleccionado = canal;
+
+        if (canal === 'pagomovil') {
+            tituloFormulario.textContent = tipoOperacion === 'retiro' ? 'Tu Cuenta de Pago Móvil (Destino)' : 'Tu Cuenta de Pago Móvil (Origen)';
+            bloqueFormPagoMovil.style.display = 'flex';
+            bloqueFormBinance.style.display = 'none';
+
+            // Habilitar switch bimonetario para Pago Móvil
+            contenedorSwitchMoneda.style.display = 'flex';
+            modoMoneda = 'BS';
+            btnModoBS.classList.add('activo');
+            btnModoUSKT.classList.remove('activo');
+        } else {
+            tituloFormulario.textContent = tipoOperacion === 'retiro' ? 'Tu Binance Pay ID (Destino)' : 'Tu Binance Pay ID (Origen)';
+            bloqueFormPagoMovil.style.display = 'none';
+            bloqueFormBinance.style.display = 'flex';
+
+            // Bloquear a USDT/USKT (1:1) sin bolívares en Binance Pay
+            contenedorSwitchMoneda.style.display = 'none';
+            modoMoneda = 'USKT';
+            btnModoUSKT.classList.add('activo');
+            btnModoBS.classList.remove('activo');
+        }
+
+        irAlPaso(2);
+    }
+
+    // =========================================================
+    // 6. PASO 2: VALIDACIÓN DE DATOS DE CUENTA
+    // =========================================================
+    function validarYContinuarPaso2() {
+        if (canalSeleccionado === 'pagomovil') {
+            const telefono = inputTelefono.value.trim();
+            const cedula = inputCedula.value.trim();
+
+            if (telefono.length < 10) {
+                ejecutarHaptico('error');
+                alert('⚠️ Por favor introduce un número de teléfono válido (ej: 04141234567).');
+                return;
+            }
+
+            if (cedula.length < 6) {
+                ejecutarHaptico('error');
+                alert('⚠️ Por favor introduce una cédula o RIF válido (ej: V-12345678).');
+                return;
+            }
+        } else {
+            const binanceId = inputBinanceId.value.trim();
+            if (binanceId.length < 5) {
+                ejecutarHaptico('error');
+                alert('⚠️ Por favor introduce un Binance Pay ID o correo válido.');
+                return;
+            }
+        }
+
+        irAlPaso(3);
+    }
+
+    // =========================================================
+    // 7. PASO 3: CÁLCULO Y VISOR DE CANTIDADES
     // =========================================================
     function obtenerValorNumerico() {
-        const centimos = parseInt(bufferCéntimos, 10) || 0;
+        const centimos = parseInt(bufferCentimos, 10) || 0;
         return centimos / 100;
     }
 
     function fijarValorNumerico(valor) {
         const centimos = Math.round(Math.max(0, valor) * 100);
-        bufferCéntimos = centimos.toString();
+        bufferCentimos = centimos.toString();
     }
 
     function actualizarVisualizador() {
         const valorActual = obtenerValorNumerico();
 
-        if (modoMoneda === 'USKT') {
-            const montoUSKT = valorActual;
-            const montoBS = montoUSKT * TASA_CAMBIO;
-
-            cifraPrincipal.textContent = `${montoUSKT.toFixed(2)} USKT`;
-            cifraSecundaria.textContent = `≈ Bs. ${montoBS.toFixed(2)}`;
+        if (canalSeleccionado === 'binance') {
+            // Modo Binance Pay: 1 USDT = 1 USKT directo
+            cifraPrincipal.textContent = `${valorActual.toFixed(2)} USDT`;
+            cifraSecundaria.textContent = `= ${valorActual.toFixed(2)} USKT (Paridad 1:1)`;
         } else {
-            const montoBS = valorActual;
-            const montoUSKT = TASA_CAMBIO > 0 ? (montoBS / TASA_CAMBIO) : 0;
-
-            cifraPrincipal.textContent = `Bs. ${montoBS.toFixed(2)}`;
-            cifraSecundaria.textContent = `≈ ${montoUSKT.toFixed(2)} USKT`;
+            // Modo Pago Móvil: Alternancia BS / USKT con tasa
+            if (modoMoneda === 'BS') {
+                const montoBS = valorActual;
+                const montoUSKT = TASA_CAMBIO > 0 ? (montoBS / TASA_CAMBIO) : 0;
+                cifraPrincipal.textContent = `Bs. ${montoBS.toFixed(2)}`;
+                cifraSecundaria.textContent = `≈ ${montoUSKT.toFixed(2)} USKT`;
+            } else {
+                const montoUSKT = valorActual;
+                const montoBS = montoUSKT * TASA_CAMBIO;
+                cifraPrincipal.textContent = `${montoUSKT.toFixed(2)} USKT`;
+                cifraSecundaria.textContent = `≈ Bs. ${montoBS.toFixed(2)}`;
+            }
         }
 
-        // Habilitar o deshabilitar botón de confirmación si el monto es mayor a 0
         if (valorActual > 0) {
             btnConfirmarOperacion.disabled = false;
         } else {
@@ -461,31 +845,23 @@
         }
     }
 
-    // =========================================================
-    // 5. SELECTOR DE DIVISA (SWITCH USKT / BS)
-    // =========================================================
     function cambiarModoMoneda(nuevoModo) {
-        if (modoMoneda === nuevoModo) {
+        if (canalSeleccionado === 'binance' || modoMoneda === nuevoModo) {
             return;
         }
 
         ejecutarHaptico('medium');
-
         const valorActual = obtenerValorNumerico();
 
         if (nuevoModo === 'BS') {
-            // Conversión al cambiar de USKT a BS: Convertimos la cantidad actual al equivalente en Bs
             const equivalenteBs = valorActual * TASA_CAMBIO;
             fijarValorNumerico(equivalenteBs);
-
             modoMoneda = 'BS';
             btnModoUSKT.classList.remove('activo');
             btnModoBS.classList.add('activo');
         } else {
-            // Conversión al cambiar de BS a USKT: Convertimos la cantidad actual al equivalente en USKT
             const equivalenteUSKT = TASA_CAMBIO > 0 ? (valorActual / TASA_CAMBIO) : 0;
             fijarValorNumerico(equivalenteUSKT);
-
             modoMoneda = 'USKT';
             btnModoBS.classList.remove('activo');
             btnModoUSKT.classList.add('activo');
@@ -495,20 +871,20 @@
     }
 
     // =========================================================
-    // 6. CONTROL DEL TECLADO NUMÉRICO (NUMPAD ATM)
+    // 8. TECLADO NUMÉRICO TÁCTIL (NUMPAD ATM)
     // =========================================================
     function presionarDigito(digito) {
         ejecutarHaptico('light');
 
-        if (bufferCéntimos.length >= 10) {
+        if (bufferCentimos.length >= 10) {
             ejecutarHaptico('warning');
             return;
         }
 
-        if (bufferCéntimos === "0") {
-            bufferCéntimos = digito;
+        if (bufferCentimos === "0") {
+            bufferCentimos = digito;
         } else {
-            bufferCéntimos += digito;
+            bufferCentimos += digito;
         }
 
         actualizarVisualizador();
@@ -517,12 +893,12 @@
     function presionarDobleCero() {
         ejecutarHaptico('light');
 
-        if (bufferCéntimos === "0") {
+        if (bufferCentimos === "0") {
             return;
         }
 
-        if (bufferCéntimos.length <= 8) {
-            bufferCéntimos += "00";
+        if (bufferCentimos.length <= 8) {
+            bufferCentimos += "00";
         } else {
             ejecutarHaptico('warning');
         }
@@ -533,39 +909,35 @@
     function presionarBorrar() {
         ejecutarHaptico('medium');
 
-        if (bufferCéntimos.length <= 1) {
-            bufferCéntimos = "0";
+        if (bufferCentimos.length <= 1) {
+            bufferCentimos = "0";
         } else {
-            bufferCéntimos = bufferCéntimos.slice(0, -1);
+            bufferCentimos = bufferCentimos.slice(0, -1);
         }
 
         actualizarVisualizador();
     }
 
-    // =========================================================
-    // 7. BOTONES PEDAGÓGICOS DE SELECCIÓN RÁPIDA CON DECIMALES
-    // =========================================================
     function agregarAtajoRapido(montoUSKT) {
         ejecutarHaptico('light');
-
         const valorActual = obtenerValorNumerico();
 
-        if (modoMoneda === 'USKT') {
-            // Si el usuario introduce datos en USKT, sumamos directamente la cantidad en USKT
-            const nuevoTotalUSKT = valorActual + montoUSKT;
-            fijarValorNumerico(nuevoTotalUSKT);
+        if (canalSeleccionado === 'binance') {
+            fijarValorNumerico(valorActual + montoUSKT);
         } else {
-            // Si el usuario introduce datos en Bs, sumamos el equivalente en Bolívares
-            const equivalenteEnBs = montoUSKT * TASA_CAMBIO;
-            const nuevoTotalBS = valorActual + equivalenteEnBs;
-            fijarValorNumerico(nuevoTotalBS);
+            if (modoMoneda === 'BS') {
+                const equivalenteBs = montoUSKT * TASA_CAMBIO;
+                fijarValorNumerico(valorActual + equivalenteBs);
+            } else {
+                fijarValorNumerico(valorActual + montoUSKT);
+            }
         }
 
         actualizarVisualizador();
     }
 
     // =========================================================
-    // 8. DESPACHO Y CONFIRMACIÓN TRANSACCIONAL
+    // 9. DESPACHO ATÓMICO CON DATOS COMPLETOS
     // =========================================================
     async function procesarConfirmacion() {
         const valorActual = obtenerValorNumerico();
@@ -582,13 +954,31 @@
         let montoFinalUSKT = 0;
         let montoFinalBS = 0;
 
-        if (modoMoneda === 'USKT') {
+        if (canalSeleccionado === 'binance') {
             montoFinalUSKT = valorActual;
-            montoFinalBS = valorActual * TASA_CAMBIO;
+            montoFinalBS = 0.00;
         } else {
-            montoFinalBS = valorActual;
-            montoFinalUSKT = TASA_CAMBIO > 0 ? (valorActual / TASA_CAMBIO) : 0;
+            if (modoMoneda === 'BS') {
+                montoFinalBS = valorActual;
+                montoFinalUSKT = TASA_CAMBIO > 0 ? (valorActual / TASA_CAMBIO) : 0;
+            } else {
+                montoFinalUSKT = valorActual;
+                montoFinalBS = valorActual * TASA_CAMBIO;
+            }
         }
+
+        // Empaquetar datos de cuenta declarados por el usuario
+        const datosCuenta = canalSeleccionado === 'pagomovil'
+            ? {
+                canal: 'Pago Móvil',
+                banco: inputBanco.value,
+                telefono: inputTelefono.value.trim(),
+                cedula: inputCedula.value.trim()
+            }
+            : {
+                canal: 'Binance Pay',
+                binance_id: inputBinanceId.value.trim()
+            };
 
         const rawInitData = (tg && tg.initData) ? tg.initData : '';
         const idempotencyKey = (typeof crypto !== 'undefined' && crypto.randomUUID)
@@ -599,6 +989,9 @@
             accion: tipoOperacion === 'retiro' ? 'cajero_retiro' : 'cajero_recarga',
             tipo_operacion: tipoOperacion,
             operacion: tipoOperacion,
+            canal: canalSeleccionado,
+            datos_cuenta: datosCuenta,
+            guardar_cuenta: chkGuardarCuenta.checked,
             moneda_origen: modoMoneda,
             monto_uskt: parseFloat(montoFinalUSKT.toFixed(2)),
             monto_bs: parseFloat(montoFinalBS.toFixed(2)),
@@ -607,8 +1000,7 @@
             init_data: rawInitData
         };
 
-        const urlBaseVercel = apiUrlParam || 'https://bingo-kalei-ve.vercel.app';
-        const endpointDestino = `${urlBaseVercel.replace(/\/$/, '')}/api/cajero-submit`;
+        const endpointDestino = `${apiUrlParam.replace(/\/$/, '')}/api/cajero-submit`;
 
         try {
             const respuesta = await fetch(endpointDestino, {
@@ -634,27 +1026,28 @@
                 if (tg) {
                     setTimeout(() => {
                         tg.close();
-                    }, 350);
+                    }, 400);
                 }
             } else {
                 ejecutarHaptico('error');
                 const detalleError = (resultado && (resultado.error || resultado.detail))
-                    || `Error de servidor (${respuesta.status})`;
+                    || `Error de respuesta del servidor (${respuesta.status})`;
                 alert(`⚠️ ${detalleError}`);
                 btnConfirmarOperacion.disabled = false;
-                textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR MONTO';
+                textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR RECARGA';
             }
         } catch (error) {
-            console.error("Fallo de red o CORS al contactar Vercel:", error);
+            console.error("Fallo de red o comunicación:", error);
             ejecutarHaptico('error');
-            alert(`⚠️ Error de red o conexión: ${error.message || 'Sin respuesta'}`);
+            alert(`⚠️ Error de conexión: ${error.message || 'Sin respuesta del servidor'}`);
             btnConfirmarOperacion.disabled = false;
-            textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR MONTO';
+            textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR RECARGA';
         }
     }
 
-    // Disparar configuración al cargar el DOM
+    // Inicializar al cargar el DOM
     window.addEventListener('DOMContentLoaded', inicializarInterfaz);
 </script>
 </body>
 </html>
+    

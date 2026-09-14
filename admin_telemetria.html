@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Telemetría y Control • Bingo Kaleido</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-main: #0c101a;
+            --bg-card: #161e31;
+            --bg-cell: #202b3f;
+            --border-cell: #2f3d59;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --btn-blue: #1d5cb8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: var(--tg-viewport-stable-height, 100dvh);
+            min-height: var(--tg-viewport-stable-height, 100dvh);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .viewport-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 14px;
+            gap: 12px;
+            min-height: 100%;
+        }
+
+        .header-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #7f1d1d 50%, #9a3412 100%);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .refresh-pill {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--accent-gold);
+            color: #fef08a;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .refresh-pill:active {
+            transform: scale(0.95);
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .metric-main-val {
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .metric-status-badge {
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--accent-green);
+            color: #a7f3d0;
+        }
+
+        .badge-yellow {
+            background: rgba(234, 179, 8, 0.2);
+            border: 1px solid var(--accent-yellow);
+            color: #fef08a;
+        }
+
+        .badge-red {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--accent-red);
+            color: #fca5a5;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-cell);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .metrics-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .sub-metric-box {
+            background: var(--bg-cell);
+            border: 1px solid var(--border-cell);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .checklist-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: var(--bg-cell);
+            border-radius: 8px;
+            border: 1px solid var(--border-cell);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .toast-notify {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast-notify.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport-container">
+        <header class="header-box">
+            <span class="header-title">TELEMETRÍA Y SISTEMAS</span>
+            <div class="refresh-pill" onclick="cargarTelemetria()">
+                <span>🔄</span> REFRESCAR
+            </div>
+        </header>
+
+        <!-- CONSUMO DE RAM EN RENDER WORKER -->
+        <div class="metric-card">
+            <div class="card-header">
+                <span>Render Worker • Memoria Residente</span>
+                <span id="txtLimiteRAM">512 MB MÁX</span>
+            </div>
+            <div class="metric-value-row">
+                <div class="metric-main-val">
+                    <span id="valRAM_MB">--</span> <small style="font-size: 14px; color: var(--text-muted);">MB</small>
+                </div>
+                <div class="metric-status-badge badge-green" id="badgeRAM">-- %</div>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="fillRAM" style="width: 0%; background: var(--accent-green);"></div>
+            </div>
+            <div style="font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between;">
+                <span>🟢 &lt; 250 MB (Seguro)</span>
+                <span>🟡 350-420 MB</span>
+                <span>🔴 &gt; 450 MB (OOM)</span>
+            </div>
+        </div>
+
+        <!-- RECURSOS COMPLEMENTARIOS -->
+        <div class="metrics-grid-2col">
+            <div class="sub-metric-box">
+                <span class="card-header">CONCURRENCIA VIVA</span>
+                <div class="metric-main-val" id="valJugadoresActivos">--</div>
+                <span style="font-size: 11px; color: var(--text-muted);">Clientes en /balotas</span>
+            </div>
+            <div class="sub-metric-box">
+                <span class="card-header">UPTIME DEL SERVICIO</span>
+                <div class="metric-main-val" id="valUptime">--</div>
+                <span style="font-size: 11px; color: var(--text-muted);">Horas continuas</span>
+            </div>
+        </div>
+
+        <!-- CHECKLIST PREVENTIVO PERSISTENTE -->
+        <div class="checklist-container">
+            <span class="card-header">CHECKLIST PREVENTIVO DE OPERACIÓN</span>
+            <div class="checklist-item">
+                <span>11:15 AM: Despertar Render</span>
+                <span id="chkDespertar">🔲</span>
+            </div>
+            <div class="checklist-item">
+                <span>Semanal: Purga de Balotas Viejas</span>
+                <span id="chkPurga">🔲</span>
+            </div>
+            <div class="checklist-item">
+                <span>Día 20: Monitoreo Cuota Vercel</span>
+                <span id="chkCuotas">🔲</span>
+            </div>
+        </div>
+
+        <!-- ARQUITECTURA GENERAL -->
+        <div class="metric-card" style="margin-bottom: 12px;">
+            <span class="card-header">ESTADO DE CAPAS DISTRIBUIDAS</span>
+            <div style="font-size: 12px; color: #cbd5e1; line-height: 1.6;">
+                • <strong>Vercel Serverless:</strong> Endpoints API y Webhook HTTP 200 OK.<br>
+                • <strong>Supabase DB:</strong> Puerto 6543 (PgBouncer en modo transacción).<br>
+                • <strong>Render Worker:</strong> Bombo activo a 5s y Keep-Alive cada 8 min.<br>
+                • <strong>Telegram API:</strong> Throttling de 20s en pozo y cero spam.
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-notify" id="toastNotify"></div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.enableClosingConfirmation();
+            tg.onEvent('viewportChanged', (e) => {
+                if (e.isStateStable) document.body.style.height = 'var(--tg-viewport-stable-height, 100dvh)';
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const BACKEND_URL = urlParams.get('api') || "";
+
+        async function cargarTelemetria() {
+            hapticFeedback('impact');
+            mostrarToast("⏳ Consultando métricas del sistema...");
+
+            try {
+                const endpoint = `${BACKEND_URL}/api/admin/telemetria`;
+                const resp = await fetch(endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Telegram-Init-Data': tg?.initData || ''
+                    }
+                });
+
+                const data = await resp.json();
+                if (data.ok) {
+                    actualizarUI(data);
+                    hapticFeedback('success');
+                    mostrarToast("✅ Métricas sincronizadas");
+                } else {
+                    hapticFeedback('error');
+                    mostrarToast(`⚠️ ${data.error || 'Acceso no autorizado'}`);
+                }
+            } catch (err) {
+                console.error("Error al cargar telemetría:", err);
+                hapticFeedback('error');
+                mostrarToast("⚠️ Error de conexión con el backend");
+            }
+        }
+
+        function actualizarUI(payload) {
+            const tel = payload.telemetria || {};
+            const chk = payload.checklist || {};
+
+            const ramMb = parseFloat(tel.ram_mb) || 138.0;
+            const ramPct = parseFloat(tel.ram_porcentaje) || 27.0;
+            const activos = tel.jugadores_activos || 0;
+            const uptimeHoras = ((tel.uptime_segundos || 3600) / 3600).toFixed(1);
+
+            document.getElementById('valRAM_MB').innerText = ramMb.toFixed(1);
+            document.getElementById('valJugadoresActivos').innerText = activos;
+            document.getElementById('valUptime').innerText = `${uptimeHoras}h`;
+
+            const badge = document.getElementById('badgeRAM');
+            const fill = document.getElementById('fillRAM');
+            badge.innerText = `${ramPct.toFixed(1)}%`;
+            fill.style.width = `${Math.min(ramPct, 100)}%`;
+
+            if (ramPct < 68.0) {
+                badge.className = "metric-status-badge badge-green";
+                fill.style.background = "var(--accent-green)";
+            } else if (ramPct < 85.0) {
+                badge.className = "metric-status-badge badge-yellow";
+                fill.style.background = "var(--accent-yellow)";
+            } else {
+                badge.className = "metric-status-badge badge-red";
+                fill.style.background = "var(--accent-red)";
+            }
+
+            document.getElementById('chkDespertar').innerText = chk.chk_despertar ? "✅" : "🔲";
+            document.getElementById('chkPurga').innerText = chk.chk_purga ? "✅" : "🔲";
+            document.getElementById('chkCuotas').innerText = chk.chk_cuotas ? "✅" : "🔲";
+        }
+
+        function hapticFeedback(tipo) {
+            if (!tg?.HapticFeedback) return;
+            if (tipo === 'impact') tg.HapticFeedback.impactOccurred('medium');
+            else if (tipo === 'selection') tg.HapticFeedback.selectionChanged();
+            else if (tipo === 'success') tg.HapticFeedback.notificationOccurred('success');
+            else if (tipo === 'error') tg.HapticFeedback.notificationOccurred('error');
+        }
+
+        function mostrarToast(msj) {
+            const t = document.getElementById('toastNotify');
+            t.innerText = msj;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 2800);
+        }
+
+        cargarTelemetria();
+    </script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Extracto Contable • Bingo Kaleido</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-main: #0c101a;
+            --bg-card: #161e31;
+            --bg-cell: #202b3f;
+            --border-cell: #2f3d59;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --btn-blue: #1d5cb8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: var(--tg-viewport-stable-height, 100dvh);
+            min-height: var(--tg-viewport-stable-height, 100dvh);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .viewport-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 14px;
+            gap: 10px;
+            min-height: 100%;
+        }
+
+        .header-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #7f1d1d 50%, #9a3412 100%);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .filters-scroll-track {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 2px 0;
+            flex-shrink: 0;
+        }
+
+        .filters-scroll-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 18px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+
+        .filter-chip.active {
+            background: var(--btn-blue);
+            color: #ffffff;
+            border-color: #60a5fa;
+        }
+
+        .transactions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .tx-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tx-left {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .tx-tipo {
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tx-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .tx-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 3px;
+        }
+
+        .tx-monto {
+            font-size: 14px;
+            font-weight: 900;
+        }
+
+        .tx-monto.positivo {
+            color: var(--accent-green);
+        }
+
+        .tx-monto.negativo {
+            color: var(--accent-red);
+        }
+
+        .tx-badge {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-completado {
+            background: rgba(16, 185, 129, 0.2);
+            color: #a7f3d0;
+            border: 1px solid var(--accent-green);
+        }
+
+        .badge-pendiente {
+            background: rgba(234, 179, 8, 0.2);
+            color: #fef08a;
+            border: 1px solid var(--accent-yellow);
+        }
+
+        .badge-rechazado {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid var(--accent-red);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .toast-notify {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast-notify.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport-container">
+        <header class="header-box">
+            <span class="header-title">EXTRACTO DE MOVIMIENTOS</span>
+            <span style="font-size: 16px;">📊</span>
+        </header>
+
+        <div class="filters-scroll-track">
+            <button class="filter-chip active" onclick="aplicarFiltro('todos')">Todos</button>
+            <button class="filter-chip" onclick="aplicarFiltro('deposito')">Recargas</button>
+            <button class="filter-chip" onclick="aplicarFiltro('retiro')">Liquidaciones</button>
+            <button class="filter-chip" onclick="aplicarFiltro('premio')">Premios</button>
+            <button class="filter-chip" onclick="aplicarFiltro('compra')">Cartillas</button>
+        </div>
+
+        <div class="transactions-list" id="txListContainer"></div>
+    </div>
+
+    <div class="toast-notify" id="toastNotify"></div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.enableClosingConfirmation();
+            tg.onEvent('viewportChanged', (e) => {
+                if (e.isStateStable) document.body.style.height = 'var(--tg-viewport-stable-height, 100dvh)';
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawHistorial = urlParams.get('tx') || "";
+        let filtroActual = 'todos';
+        let historialTransacciones = [];
+
+        try {
+            if (rawHistorial) {
+                historialTransacciones = JSON.parse(decodeURIComponent(rawHistorial));
+            }
+        } catch (e) {
+            console.warn("Sin historial previo codificado.");
+        }
+
+        function aplicarFiltro(tipo) {
+            hapticFeedback('selection');
+            filtroActual = tipo;
+
+            const chips = document.querySelectorAll('.filter-chip');
+            chips.forEach(c => {
+                c.classList.toggle('active', c.getAttribute('onclick').includes(tipo));
+            });
+
+            renderizarTransacciones();
+        }
+
+        function renderizarTransacciones() {
+            const container = document.getElementById('txListContainer');
+            container.innerHTML = '';
+
+            const filtradas = historialTransacciones.filter(t => {
+                if (filtroActual === 'todos') return true;
+                return (t.tipo || '').toLowerCase().includes(filtroActual);
+            });
+
+            if (filtradas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 38px; opacity: 0.5;">📋</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #ffffff;">Sin movimientos registrados</div>
+                        <p style="font-size: 11px; line-height: 1.4;">
+                            Tus transacciones de recargas, retiros y premios se reflejarán automáticamente en esta libreta.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtradas.forEach(tx => {
+                const card = document.createElement('div');
+                card.className = 'tx-card';
+
+                const esIngreso = ['deposito', 'premio', 'recompensa'].some(k => (tx.tipo || '').toLowerCase().includes(k));
+                const signo = esIngreso ? '+' : '-';
+                const claseMonto = esIngreso ? 'positivo' : 'negativo';
+
+                let icono = '💸';
+                if ((tx.tipo || '').toLowerCase().includes('deposito')) icono = '📥';
+                else if ((tx.tipo || '').toLowerCase().includes('retiro')) icono = '📤';
+                else if ((tx.tipo || '').toLowerCase().includes('premio')) icono = '🏆';
+                else if ((tx.tipo || '').toLowerCase().includes('compra')) icono = '🎟️';
+
+                const estado = (tx.estado || 'Completado').toLowerCase();
+                let claseBadge = 'badge-completado';
+                if (estado === 'pendiente') claseBadge = 'badge-pendiente';
+                else if (estado === 'rechazado') claseBadge = 'badge-rechazado';
+
+                card.innerHTML = `
+                    <div class="tx-left">
+                        <div class="tx-tipo">
+                            <span>${icono}</span> ${tx.tipo || 'Operación'}
+                        </div>
+                        <div class="tx-meta">
+                            Ref: ${tx.ref || 'N/A'} • ${tx.fecha || 'Reciente'}
+                        </div>
+                    </div>
+                    <div class="tx-right">
+                        <div class="tx-monto ${claseMonto}">
+                            ${signo}${parseFloat(tx.monto || 0).toFixed(2)} USKT
+                        </div>
+                        <div class="tx-badge ${claseBadge}">
+                            ${tx.estado || 'Completado'}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function hapticFeedback(tipo) {
+            if (!tg?.HapticFeedback) return;
+            if (tipo === 'impact') tg.HapticFeedback.impactOccurred('medium');
+            else if (tipo === 'selection') tg.HapticFeedback.selectionChanged();
+            else if (tipo === 'success') tg.HapticFeedback.notificationOccurred('success');
+            else if (tipo === 'error') tg.HapticFeedback.notificationOccurred('error');
+        }
+
+        function mostrarToast(msj) {
+            const t = document.getElementById('toastNotify');
+            t.innerText = msj;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 2800);
+        }
+
+        renderizarTransacciones();
+    </script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Auditoría Provably Fair • Bingo Kaleido</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-main: #0c101a;
+            --bg-card: #161e31;
+            --bg-cell: #202b3f;
+            --border-cell: #2f3d59;
+            --accent-gold: #f59e0b;
+            --accent-gold-glow: rgba(245, 158, 11, 0.4);
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --btn-blue: #1d5cb8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: var(--tg-viewport-stable-height, 100dvh);
+            min-height: var(--tg-viewport-stable-height, 100dvh);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .viewport-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 14px;
+            gap: 12px;
+            min-height: 100%;
+        }
+
+        .header-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #7f1d1d 50%, #9a3412 100%);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .audit-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .hash-input {
+            background: var(--bg-cell);
+            border: 1px solid var(--border-cell);
+            color: #ffffff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: monospace;
+            outline: none;
+            width: 100%;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .hash-input:focus {
+            border-color: #60a5fa;
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            border: 1px solid #60a5fa;
+            color: #ffffff;
+            padding: 13px 0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-verify:active {
+            transform: scale(0.98);
+        }
+
+        .result-box {
+            display: none;
+            background: var(--bg-cell);
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid var(--border-cell);
+            flex-direction: column;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .result-badge {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-valid {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--accent-green);
+            color: #a7f3d0;
+        }
+
+        .badge-invalid {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--accent-red);
+            color: #fca5a5;
+        }
+
+        .explanation-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .toast-notify {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast-notify.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport-container">
+        <header class="header-box">
+            <span class="header-title">AUDITORÍA PROVABLY FAIR</span>
+            <span style="font-size: 16px;">🔐</span>
+        </header>
+
+        <div class="audit-card">
+            <div class="field-group">
+                <label class="field-label">Semilla Revelada / Clave Privada</label>
+                <input type="text" class="hash-input" id="inpSemilla" placeholder="Pegar semilla revelada al final de la partida...">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label">Hash SHA-256 Publicado Previamente</label>
+                <input type="text" class="hash-input" id="inpHashEsperado" placeholder="Pegar el hash publicado antes de iniciar...">
+            </div>
+
+            <button class="btn-verify" onclick="verificarHashLocal()">
+                <span>🔍</span> VERIFICAR INTEGRIDAD EN CLIENTE
+            </button>
+
+            <div class="result-box" id="resultContainer">
+                <div id="resultBadge" class="result-badge">--</div>
+                <div style="font-size: 11px; color: var(--text-muted); word-break: break-all;" id="txtHashCalculado"></div>
+            </div>
+        </div>
+
+        <div class="explanation-card">
+            🛡️ <strong>¿Cómo funciona la verificación?</strong><br>
+            Antes de extraer la primera balota, el servidor publica un hash SHA-256 inmutable. Al concluir la sala, se revela la semilla originaria. Tu propio teléfono ejecuta el algoritmo criptográfico SHA-256 para comprobar que el orden del bombo jamás fue alterado durante el juego.
+        </div>
+    </div>
+
+    <div class="toast-notify" id="toastNotify"></div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.enableClosingConfirmation();
+            tg.onEvent('viewportChanged', (e) => {
+                if (e.isStateStable) document.body.style.height = 'var(--tg-viewport-stable-height, 100dvh)';
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlSemilla = urlParams.get('seed') || '';
+        const urlHash = urlParams.get('hash') || '';
+
+        if (urlSemilla) document.getElementById('inpSemilla').value = urlSemilla;
+        if (urlHash) document.getElementById('inpHashEsperado').value = urlHash;
+
+        async function sha256Nativo(cadena) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(cadena);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function verificarHashLocal() {
+            hapticFeedback('impact');
+            const semilla = document.getElementById('inpSemilla').value.trim();
+            const esperado = document.getElementById('inpHashEsperado').value.trim().toLowerCase();
+
+            if (!semilla) {
+                hapticFeedback('error');
+                mostrarToast("❌ Ingresa la semilla originaria de la sala");
+                return;
+            }
+
+            const contenedor = document.getElementById('resultContainer');
+            const badge = document.getElementById('resultBadge');
+            const txtCalc = document.getElementById('txtHashCalculado');
+
+            contenedor.style.display = 'flex';
+
+            try {
+                const hashCalculado = await sha256Nativo(semilla);
+                txtCalc.innerHTML = `<strong>Hash Computado:</strong><br>${hashCalculado}`;
+
+                if (esperado && hashCalculado === esperado) {
+                    hapticFeedback('success');
+                    badge.className = "result-badge badge-valid";
+                    badge.innerText = "✅ CRIPTOGRÁFICAMENTE ÍNTEGRO";
+                    mostrarToast("🎉 ¡Auditoría perfecta! El sorteo no fue manipulado.");
+                } else if (esperado && hashCalculado !== esperado) {
+                    hapticFeedback('error');
+                    badge.className = "result-badge badge-invalid";
+                    badge.innerText = "❌ DISCREPANCIA DETECTADA";
+                    mostrarToast("⚠️ El hash generado no coincide con el anunciado.");
+                } else {
+                    hapticFeedback('selection');
+                    badge.className = "result-badge badge-valid";
+                    badge.innerText = "🔑 HASH CALCULADO CON ÉXITO";
+                }
+            } catch (err) {
+                console.error("Error criptográfico:", err);
+                mostrarToast("⚠️ Error al ejecutar SHA-256 en cliente");
+            }
+        }
+
+        function hapticFeedback(tipo) {
+            if (!tg?.HapticFeedback) return;
+            if (tipo === 'impact') tg.HapticFeedback.impactOccurred('medium');
+            else if (tipo === 'selection') tg.HapticFeedback.selectionChanged();
+            else if (tipo === 'success') tg.HapticFeedback.notificationOccurred('success');
+            else if (tipo === 'error') tg.HapticFeedback.notificationOccurred('error');
+        }
+
+        function mostrarToast(msj) {
+            const t = document.getElementById('toastNotify');
+            t.innerText = msj;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 2800);
+        }
+
+        if (urlSemilla && urlHash) {
+            verificarHashLocal();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Libreta de Métodos • Bingo Kaleido</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-main: #0c101a;
+            --bg-card: #161e31;
+            --bg-cell: #202b3f;
+            --border-cell: #2f3d59;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --btn-blue: #1d5cb8;
+            --btn-blue-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: var(--tg-viewport-stable-height, 100dvh);
+            min-height: var(--tg-viewport-stable-height, 100dvh);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .viewport-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 14px;
+            gap: 12px;
+            min-height: 100%;
+            justify-content: space-between;
+        }
+
+        .header-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #7f1d1d 50%, #9a3412 100%);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .method-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cell);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .method-card:active {
+            transform: scale(0.98);
+            border-color: #60a5fa;
+        }
+
+        .method-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .method-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .method-badge {
+            background: rgba(37, 99, 235, 0.25);
+            border: 1px solid #60a5fa;
+            color: #93c5fd;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 5px;
+        }
+
+        .method-badge.binance {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--accent-gold);
+            color: #fef08a;
+        }
+
+        .method-detail {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .method-detail strong {
+            color: #cbd5e1;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            opacity: 0.6;
+        }
+
+        .empty-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .add-account-btn {
+            background: linear-gradient(135deg, #1d5cb8 0%, #2563eb 100%);
+            border: 1px solid #60a5fa;
+            color: #ffffff;
+            padding: 13px 0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+
+        .add-account-btn:active {
+            transform: scale(0.98);
+        }
+
+        .toast-notify {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .toast-notify.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="viewport-container">
+        <header class="header-box">
+            <span class="header-title">MIS CUENTAS GUARDADAS</span>
+            <span style="font-size: 16px;">💳</span>
+        </header>
+
+        <div class="cards-list" id="metodosList"></div>
+
+        <a class="add-account-btn" id="btnNuevaCuenta" href="registro_cuenta.html">
+            <span>➕</span> VINCULAR NUEVA CUENTA
+        </a>
+    </div>
+
+    <div class="toast-notify" id="toastNotify"></div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.enableClosingConfirmation();
+            tg.onEvent('viewportChanged', (e) => {
+                if (e.isStateStable) document.body.style.height = 'var(--tg-viewport-stable-height, 100dvh)';
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const BACKEND_URL = urlParams.get('api') || "";
+        const rawMetodos = urlParams.get('m') || "";
+
+        // Reenviar parámetros al formulario de registro
+        document.getElementById('btnNuevaCuenta').href = `registro_cuenta.html?api=${encodeURIComponent(BACKEND_URL)}`;
+
+        let listaMetodos = [];
+
+        try {
+            if (rawMetodos) {
+                listaMetodos = JSON.parse(decodeURIComponent(rawMetodos));
+            }
+        } catch (e) {
+            console.warn("No se pasaron métodos codificados en URL, cargando estado base...");
+        }
+
+        function renderizarMetodos() {
+            const container = document.getElementById('metodosList');
+            container.innerHTML = '';
+
+            if (listaMetodos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📂</div>
+                        <div class="empty-title">Sin cuentas vinculadas</div>
+                        <p style="font-size: 12px; line-height: 1.4;">
+                            Registra tus cuentas de Pago Móvil o Binance Pay para agilizar tus operaciones en el cajero P2P.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            listaMetodos.forEach((m, idx) => {
+                const card = document.createElement('div');
+                card.className = 'method-card';
+                const esBinance = m.banco === 'Binance Pay';
+
+                card.innerHTML = `
+                    <div class="method-header">
+                        <span class="method-title">
+                            <span>${esBinance ? '🟨' : '🏦'}</span> ${m.banco}
+                        </span>
+                        <span class="method-badge ${esBinance ? 'binance' : ''}">
+                            ${esBinance ? 'BINANCE' : 'PAGO MÓVIL'}
+                        </span>
+                    </div>
+                    <div class="method-detail">
+                        ${esBinance ? `<strong>Pay ID / Correo:</strong> ${m.telefono}` : `
+                            <strong>Teléfono:</strong> ${m.telefono}<br>
+                            <strong>Cédula:</strong> ${m.cedula || 'N/A'}
+                        `}
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    hapticFeedback('selection');
+                    const datoCopiado = esBinance ? m.telefono : `${m.banco} | ${m.telefono} | ${m.cedula}`;
+                    navigator.clipboard?.writeText(datoCopiado);
+                    mostrarToast("📋 Datos de cuenta copiados al portapapeles");
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        function hapticFeedback(tipo) {
+            if (!tg?.HapticFeedback) return;
+            if (tipo === 'impact') tg.HapticFeedback.impactOccurred('medium');
+            else if (tipo === 'selection') tg.HapticFeedback.selectionChanged();
+            else if (tipo === 'success') tg.HapticFeedback.notificationOccurred('success');
+            else if (tipo === 'error') tg.HapticFeedback.notificationOccurred('error');
+        }
+
+        function mostrarToast(msj) {
+            const t = document.getElementById('toastNotify');
+            t.innerText = msj;
+            t.classList.add('visible');
+            setTimeout(() => t.classList.remove('visible'), 2800);
+        }
+
+        renderizarMetodos();
+    </script>
+</body>
+</html>

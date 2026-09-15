@@ -57,7 +57,7 @@
             height: 100%;
             max-width: 440px;
             margin: 0 auto;
-            padding: 12px 16px 14px 16px;
+            padding: 10px 14px 12px 14px;
         }
 
         /* 1. Encabezado e Indicador de Pasos */
@@ -68,8 +68,8 @@
             background: linear-gradient(90deg, rgba(19, 26, 42, 0.9) 0%, rgba(13, 18, 30, 0.9) 100%);
             border: 1px solid var(--borde-suave);
             border-radius: 12px;
-            padding: 8px 12px;
-            margin-bottom: 8px;
+            padding: 7px 12px;
+            margin-bottom: 6px;
         }
 
         .header-titulo {
@@ -98,7 +98,7 @@
             display: flex;
             justify-content: center;
             gap: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .paso-punto {
@@ -115,26 +115,27 @@
             background: var(--oro-primario);
         }
 
-        /* 2. Estructura de Pantallas del Asistente */
+        /* 2. Contenedores de Pasos */
         .paso-contenedor {
             display: none;
             flex-direction: column;
             flex: 1;
             justify-content: space-between;
+            overflow-y: auto;
         }
 
         .paso-contenedor.activo {
             display: flex;
         }
 
-        /* 3. Estilos Paso 1: Selección de Canal */
+        /* 3. Paso 1: Selección de Canal */
         .titulo-seccion {
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 800;
             color: var(--oro-primario);
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             text-align: center;
         }
 
@@ -142,14 +143,14 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 6px;
         }
 
         .tarjeta-metodo {
             background: var(--tarjeta-bg);
             border: 1px solid var(--borde-suave);
             border-radius: 14px;
-            padding: 16px;
+            padding: 15px;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -164,11 +165,11 @@
         }
 
         .icono-metodo {
-            font-size: 28px;
+            font-size: 26px;
         }
 
         .info-metodo h4 {
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 2px;
@@ -177,40 +178,54 @@
         .info-metodo p {
             font-size: 11px;
             color: var(--texto-apagado);
+            line-height: 1.3;
         }
 
-        /* 4. Estilos Paso 2: Formulario de Datos de Origen */
+        /* 4. Paso 2: Formulario Estilo registro_cuenta.html */
         .formulario-datos {
             background: var(--tarjeta-bg);
             border: 1px solid var(--borde-suave);
             border-radius: 14px;
-            padding: 14px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .grupo-input {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
         }
 
         .grupo-input label {
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 700;
             color: var(--texto-apagado);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
+        .input-row-doble {
+            display: grid;
+            gap: 8px;
+        }
+
+        .input-row-telefono {
+            grid-template-columns: 88px 1fr;
+        }
+
+        .input-row-cedula {
+            grid-template-columns: 68px 1fr;
+        }
+
         .input-cajero, .select-cajero {
             background: #0b0f19;
             border: 1px solid var(--borde-suave);
             border-radius: 8px;
-            padding: 9px 12px;
+            padding: 8px 10px;
             color: #ffffff;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
             outline: none;
             width: 100%;
@@ -220,6 +235,19 @@
 
         .input-cajero:focus, .select-cajero:focus {
             border-color: var(--oro-primario);
+        }
+
+        .tarjeta-info-binance {
+            background: rgba(255, 200, 87, 0.08);
+            border: 1px solid rgba(255, 200, 87, 0.25);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 11px;
+            color: #fef08a;
+            line-height: 1.35;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
         }
 
         .checkbox-contenedor {
@@ -237,12 +265,12 @@
         }
 
         .checkbox-contenedor span {
-            font-size: 11px;
+            font-size: 10.5px;
             color: var(--texto-apagado);
             font-weight: 600;
         }
 
-        /* 5. Estilos Paso 3: Visor, Atajos y Numpad */
+        /* 5. Paso 3: Calculadora y Numpad */
         .switch-moneda-container {
             display: flex;
             background: rgba(0, 0, 0, 0.45);
@@ -250,7 +278,7 @@
             border-radius: 10px;
             padding: 3px;
             gap: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .btn-switch {
@@ -279,14 +307,14 @@
         .visor-monto {
             background: var(--tarjeta-bg);
             border: 1px solid var(--borde-suave);
-            border-radius: 14px;
-            padding: 8px 12px;
+            border-radius: 12px;
+            padding: 7px 12px;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .visor-etiqueta {
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -295,7 +323,7 @@
         }
 
         .visor-cifra-principal {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             color: var(--oro-primario);
             line-height: 1.15;
@@ -303,14 +331,14 @@
         }
 
         .visor-cifra-secundaria {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 600;
             color: var(--texto-apagado);
             margin-top: 2px;
         }
 
         .atajos-contenedor {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .atajos-etiqueta {
@@ -335,9 +363,9 @@
             background: var(--tecla-bg);
             border: 1px solid var(--borde-suave);
             border-radius: 8px;
-            padding: 6px 2px;
+            padding: 5px 2px;
             color: #f1f5f9;
-            font-size: 10.5px;
+            font-size: 10px;
             font-weight: 700;
             text-align: center;
             cursor: pointer;
@@ -353,17 +381,17 @@
         .numpad-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin-bottom: 8px;
+            gap: 5px;
+            margin-bottom: 6px;
         }
 
         .tecla {
-            height: 46px;
+            height: 44px;
             background: var(--tecla-bg);
             border: 1px solid var(--borde-suave);
             border-radius: 10px;
             color: #ffffff;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -379,30 +407,31 @@
         }
 
         .tecla.tecla-doble-cero {
-            font-size: 17px;
+            font-size: 16px;
         }
 
         .tecla.tecla-borrar {
             color: var(--rojo-borrar);
-            font-size: 24px;
+            font-size: 22px;
             line-height: 1;
         }
 
-        /* 6. Botones de Navegación y Confirmación */
+        /* 6. Botones de Acción */
         .botones-accion-row {
             display: flex;
             gap: 8px;
             width: 100%;
+            margin-top: 4px;
         }
 
         .btn-secundario {
-            height: 46px;
+            height: 44px;
             flex: 0 0 75px;
             background: #1e293b;
             border: 1px solid var(--borde-suave);
             border-radius: 12px;
             color: #cbd5e1;
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -416,13 +445,13 @@
         }
 
         .btn-principal {
-            height: 46px;
+            height: 44px;
             flex: 1;
             background: var(--azul-gradiente);
             border: none;
             border-radius: 12px;
             color: #ffffff;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 800;
             letter-spacing: 0.6px;
             text-transform: uppercase;
@@ -461,7 +490,7 @@
         </div>
     </header>
 
-    <!-- Indicador de Progreso (Paso 1, 2, 3) -->
+    <!-- Indicador de Progreso de Pasos -->
     <nav class="pasos-indicador">
         <div class="paso-punto activo" id="puntoPaso1"></div>
         <div class="paso-punto" id="puntoPaso2"></div>
@@ -479,7 +508,7 @@
                     <span class="icono-metodo">📱</span>
                     <div class="info-metodo">
                         <h4>Pago Móvil (Bolívares)</h4>
-                        <p>Transferencia instantánea con bancos nacionales en VES</p>
+                        <p>Transferencia instantánea interbancaria nacional en VES</p>
                     </div>
                 </div>
 
@@ -487,37 +516,47 @@
                     <span class="icono-metodo">🟡</span>
                     <div class="info-metodo">
                         <h4>Binance Pay (USDT)</h4>
-                        <p>Transferencia directa sin comisiones (1 USDT = 1 USKT)</p>
+                        <p>Transferencia directa sin comisión externa (1 USDT = 1 USKT)</p>
                     </div>
                 </div>
             </div>
         </div>
-        <div><!-- Espacio reservado para balance visual --></div>
+        <div></div>
     </section>
 
     <!-- ========================================================= -->
-    <!-- PASO 2: DATOS DE ORIGEN DEL JUGADOR                       -->
+    <!-- PASO 2: DATOS DE LA CUENTA (ESTRUCTURA REGISTRO_CUENTA)   -->
     <!-- ========================================================= -->
     <section class="paso-contenedor" id="vistaPaso2">
         <div class="formulario-datos">
-            <div class="titulo-seccion" id="tituloFormulario">Datos de tu Cuenta</div>
+            <div class="titulo-seccion" id="tituloFormulario">Datos de la Cuenta</div>
 
-            <!-- Campos específicos para Pago Móvil -->
-            <div id="bloqueFormPagoMovil" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Bloque Exclusivo: Pago Móvil -->
+            <div id="bloqueFormPagoMovil" style="display: flex; flex-direction: column; gap: 8px;">
                 <div class="grupo-input">
-                    <label>Banco Emisor</label>
+                    <label>Banco Nacional Emisor / Receptor</label>
                     <select class="select-cajero" id="inputBanco">
                         <option value="0102 - Banco de Venezuela">0102 - Banco de Venezuela</option>
-                        <option value="0134 - Banesco">0134 - Banesco</option>
+                        <option value="0104 - Venezolano de Crédito">0104 - Venezolano de Crédito</option>
                         <option value="0105 - Mercantil">0105 - Mercantil</option>
-                        <option value="0108 - Provincial">0108 - Provincial</option>
-                        <option value="0163 - Bancamiga">0163 - Bancamiga</option>
-                        <option value="0172 - Bancaribe">0172 - Bancaribe</option>
+                        <option value="0108 - BBVA Provincial">0108 - BBVA Provincial</option>
                         <option value="0114 - Bancaribe">0114 - Bancaribe</option>
-                        <option value="0116 - B.O.D.">0116 - B.O.D.</option>
+                        <option value="0115 - Exterior">0115 - Exterior</option>
                         <option value="0128 - Banco Caroní">0128 - Banco Caroní</option>
+                        <option value="0134 - Banesco">0134 - Banesco</option>
+                        <option value="0137 - Sofitasa">0137 - Sofitasa</option>
+                        <option value="0138 - Banco Plaza">0138 - Banco Plaza</option>
+                        <option value="0146 - Bangente">0146 - Bangente</option>
                         <option value="0151 - BFC Banco Fondo Común">0151 - BFC Banco Fondo Común</option>
-                        <option value="0171 - Banco Activo">0171 - Banco Activo</option>
+                        <option value="0156 - 100% Banco">0156 - 100% Banco</option>
+                        <option value="0157 - DelSur">0157 - DelSur</option>
+                        <option value="0163 - Bancamiga">0163 - Bancamiga</option>
+                        <option value="0166 - Banco Activo">0166 - Banco Activo</option>
+                        <option value="0168 - Bancrecer">0168 - Bancrecer</option>
+                        <option value="0169 - Mi Banco">0169 - Mi Banco</option>
+                        <option value="0171 - Banco Activo (Fusión)">0171 - Banco Activo (Fusión)</option>
+                        <option value="0172 - Bancamiga (Fusión)">0172 - Bancamiga (Fusión)</option>
+                        <option value="0174 - Banplus">0174 - Banplus</option>
                         <option value="0175 - Banco Bicentenario">0175 - Banco Bicentenario</option>
                         <option value="0177 - BANFANB">0177 - BANFANB</option>
                         <option value="0191 - BNC Banco Nacional de Crédito">0191 - BNC Banco Nacional de Crédito</option>
@@ -525,21 +564,45 @@
                 </div>
 
                 <div class="grupo-input">
-                    <label>Teléfono Origen</label>
-                    <input type="tel" class="input-cajero" id="inputTelefono" placeholder="Ej: 04141234567" maxlength="11" />
+                    <label>Teléfono Celular Asociado</label>
+                    <div class="input-row-doble input-row-telefono">
+                        <select class="select-cajero" id="selectPrefijoTelf">
+                            <option value="0414">0414</option>
+                            <option value="0424">0424</option>
+                            <option value="0412">0412</option>
+                            <option value="0422">0422</option>
+                            <option value="0416">0416</option>
+                            <option value="0426">0426</option>
+                        </select>
+                        <input type="tel" class="input-cajero" id="inputNumTelf" placeholder="1234567" maxlength="7" inputmode="numeric" />
+                    </div>
                 </div>
 
                 <div class="grupo-input">
-                    <label>Cédula o RIF del Titular</label>
-                    <input type="text" class="input-cajero" id="inputCedula" placeholder="Ej: V-12345678" maxlength="12" />
+                    <label>Documento de Identidad del Titular</label>
+                    <div class="input-row-doble input-row-cedula">
+                        <select class="select-cajero" id="selectTipoDoc">
+                            <option value="V">V</option>
+                            <option value="E">E</option>
+                            <option value="J">J</option>
+                            <option value="G">G</option>
+                            <option value="P">P</option>
+                        </select>
+                        <input type="text" class="input-cajero" id="inputNumDoc" placeholder="12345678" maxlength="10" inputmode="numeric" />
+                    </div>
                 </div>
             </div>
 
-            <!-- Campos específicos para Binance Pay -->
-            <div id="bloqueFormBinance" style="display: none; flex-direction: column; gap: 10px;">
+            <!-- Bloque Exclusivo: Binance Pay -->
+            <div id="bloqueFormBinance" style="display: none; flex-direction: column; gap: 8px;">
+                <div class="tarjeta-info-binance">
+                    <span>💡</span>
+                    <span>Ingresa tu <b>Binance Pay ID</b> numérico (ej: 198273645) o el <b>correo electrónico</b> con el que tienes registrada tu cuenta en Binance.</span>
+                </div>
+
                 <div class="grupo-input">
-                    <label>Binance Pay ID / Correo</label>
-                    <input type="text" class="input-cajero" id="inputBinanceId" placeholder="Ej: 198273645 o correo@gmail.com" maxlength="40" />
+                    <label>Binance Pay ID / Correo Oficial</label>
+                    <input type="text" class="input-cajero" id="inputBinanceId" placeholder="Ej: 198273645 o usuario@correo.com" maxlength="50" />
                 </div>
             </div>
 
@@ -550,7 +613,7 @@
         </div>
 
         <div class="botones-accion-row">
-            <button type="button" class="btn-secundario" onclick="irAlPaso(1)">⬅️ Atrás</button>
+            <button type="button" class="btn-secundario" onclick="irAlPaso(1)">⬅️ Canal</button>
             <button type="button" class="btn-principal" onclick="validarYContinuarPaso2()">Continuar ➡️</button>
         </div>
     </section>
@@ -560,7 +623,7 @@
     <!-- ========================================================= -->
     <section class="paso-contenedor" id="vistaPaso3">
         <div>
-            <!-- Alternancia Bimonetaria (Solo visible en Pago Móvil) -->
+            <!-- Alternancia Moneda (Exclusivo Pago Móvil) -->
             <div class="switch-moneda-container" id="contenedorSwitchMoneda">
                 <button type="button" class="btn-switch activo" id="btnModoBS" onclick="cambiarModoMoneda('BS')">
                     <span>🇻🇪</span>
@@ -572,14 +635,14 @@
                 </button>
             </div>
 
-            <!-- Pantalla Visor de Cifras -->
+            <!-- Visor de Montos -->
             <div class="visor-monto">
                 <div class="visor-etiqueta" id="etiquetaVisor">CANTIDAD A RECARGAR</div>
                 <div class="visor-cifra-principal" id="cifraPrincipal">Bs. 0.00</div>
                 <div class="visor-cifra-secundaria" id="cifraSecundaria">≈ 0.00 USKT</div>
             </div>
 
-            <!-- Atajos Pedagógicos -->
+            <!-- Atajos Sugeridos -->
             <div class="atajos-contenedor">
                 <div class="atajos-etiqueta">
                     <span>⚡</span>
@@ -593,7 +656,7 @@
                 </div>
             </div>
 
-            <!-- Numpad Táctil Ergonómico (46px) -->
+            <!-- Numpad Táctil -->
             <div class="numpad-grid">
                 <button type="button" class="tecla" onclick="presionarDigito('1')">1</button>
                 <button type="button" class="tecla" onclick="presionarDigito('2')">2</button>
@@ -622,7 +685,7 @@
         </div>
     </section>
 </div> <!-- Fin de app-container -->
-<script>
+    <script>
     // =========================================================
     // 1. INICIALIZACIÓN DE TELEGRAM WEBAPP Y VARIABLES GLOBALES
     // =========================================================
@@ -634,42 +697,44 @@
         tg.enableClosingConfirmation();
     }
 
-    // Parámetros de entorno desde la URL
+    // Parámetros de configuración provenientes de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const tipoOperacion = (urlParams.get('tipo') || urlParams.get('modo') || 'recarga').toLowerCase();
     const tasaParam = parseFloat(urlParams.get('tasa')) || 946.30;
     const apiUrlParam = urlParams.get('api_url') || 'https://bingo-kalei-ve.vercel.app';
 
-    // Estados del Asistente Multipasos
+    // Estados de navegación del Asistente
     let pasoActual = 1;
     let canalSeleccionado = null; // 'pagomovil' o 'binance'
     let TASA_CAMBIO = tasaParam;
     let modoMoneda = 'BS'; // 'BS' o 'USKT'
     let bufferCentimos = "0";
 
-    // Referencias al DOM - Encabezado y Navegación
+    // Referencias DOM - Encabezado y Pasos
     const textoOperacion = document.getElementById('textoOperacion');
     const badgeTasaReferencial = document.getElementById('badgeTasaReferencial');
     const puntoPaso1 = document.getElementById('puntoPaso1');
     const puntoPaso2 = document.getElementById('puntoPaso2');
     const puntoPaso3 = document.getElementById('puntoPaso3');
 
-    // Referencias al DOM - Pantallas
+    // Referencias DOM - Vistas
     const vistaPaso1 = document.getElementById('vistaPaso1');
     const vistaPaso2 = document.getElementById('vistaPaso2');
     const vistaPaso3 = document.getElementById('vistaPaso3');
 
-    // Referencias al DOM - Formulario Paso 2
+    // Referencias DOM - Formulario Paso 2 (Estructura registro_cuenta)
     const tituloFormulario = document.getElementById('tituloFormulario');
     const bloqueFormPagoMovil = document.getElementById('bloqueFormPagoMovil');
     const bloqueFormBinance = document.getElementById('bloqueFormBinance');
     const inputBanco = document.getElementById('inputBanco');
-    const inputTelefono = document.getElementById('inputTelefono');
-    const inputCedula = document.getElementById('inputCedula');
+    const selectPrefijoTelf = document.getElementById('selectPrefijoTelf');
+    const inputNumTelf = document.getElementById('inputNumTelf');
+    const selectTipoDoc = document.getElementById('selectTipoDoc');
+    const inputNumDoc = document.getElementById('inputNumDoc');
     const inputBinanceId = document.getElementById('inputBinanceId');
     const chkGuardarCuenta = document.getElementById('chkGuardarCuenta');
 
-    // Referencias al DOM - Calculadora Paso 3
+    // Referencias DOM - Numpad Paso 3
     const contenedorSwitchMoneda = document.getElementById('contenedorSwitchMoneda');
     const btnModoBS = document.getElementById('btnModoBS');
     const btnModoUSKT = document.getElementById('btnModoUSKT');
@@ -680,7 +745,7 @@
     const textoBotonConfirmar = document.getElementById('textoBotonConfirmar');
 
     // =========================================================
-    // 2. CONFIGURACIÓN INICIAL SEGÚN EL TIPO DE OPERACIÓN
+    // 2. CONFIGURACIÓN SEGÚN EL TIPO DE OPERACIÓN
     // =========================================================
     function inicializarInterfaz() {
         badgeTasaReferencial.textContent = `1 USKT = Bs. ${TASA_CAMBIO.toFixed(2)}`;
@@ -699,7 +764,7 @@
     }
 
     // =========================================================
-    // 3. VIBRACIÓN HÁPTICA AUXILIAR
+    // 3. RESPUESTA HÁPTICA
     // =========================================================
     function ejecutarHaptico(tipo = 'light') {
         if (tg && tg.HapticFeedback) {
@@ -712,13 +777,12 @@
     }
 
     // =========================================================
-    // 4. CONTROL DE PANTALLAS (PASOS 1, 2 Y 3)
+    // 4. TRANSICIONES ENTRE PASOS
     // =========================================================
     function irAlPaso(nuevoPaso) {
         ejecutarHaptico('light');
         pasoActual = nuevoPaso;
 
-        // Gestión visual de contenedores
         vistaPaso1.classList.remove('activo');
         vistaPaso2.classList.remove('activo');
         vistaPaso3.classList.remove('activo');
@@ -748,21 +812,23 @@
         canalSeleccionado = canal;
 
         if (canal === 'pagomovil') {
-            tituloFormulario.textContent = tipoOperacion === 'retiro' ? 'Tu Cuenta de Pago Móvil (Destino)' : 'Tu Cuenta de Pago Móvil (Origen)';
+            tituloFormulario.textContent = tipoOperacion === 'retiro' 
+                ? 'Datos de Pago Móvil Receptor' 
+                : 'Datos de Pago Móvil Emisor';
             bloqueFormPagoMovil.style.display = 'flex';
             bloqueFormBinance.style.display = 'none';
 
-            // Habilitar switch bimonetario para Pago Móvil
             contenedorSwitchMoneda.style.display = 'flex';
             modoMoneda = 'BS';
             btnModoBS.classList.add('activo');
             btnModoUSKT.classList.remove('activo');
         } else {
-            tituloFormulario.textContent = tipoOperacion === 'retiro' ? 'Tu Binance Pay ID (Destino)' : 'Tu Binance Pay ID (Origen)';
+            tituloFormulario.textContent = tipoOperacion === 'retiro' 
+                ? 'Binance Pay Destino' 
+                : 'Binance Pay Origen';
             bloqueFormPagoMovil.style.display = 'none';
             bloqueFormBinance.style.display = 'flex';
 
-            // Bloquear a USDT/USKT (1:1) sin bolívares en Binance Pay
             contenedorSwitchMoneda.style.display = 'none';
             modoMoneda = 'USKT';
             btnModoUSKT.classList.add('activo');
@@ -773,29 +839,35 @@
     }
 
     // =========================================================
-    // 6. PASO 2: VALIDACIÓN DE DATOS DE CUENTA
+    // 6. PASO 2: VALIDACIÓN RIGUROSA DE DATOS DE CUENTA
     // =========================================================
     function validarYContinuarPaso2() {
         if (canalSeleccionado === 'pagomovil') {
-            const telefono = inputTelefono.value.trim();
-            const cedula = inputCedula.value.trim();
+            const numTelefono = inputNumTelf.value.trim();
+            const numDocumento = inputNumDoc.value.trim();
 
-            if (telefono.length < 10) {
+            if (!/^\d{7}$/.test(numTelefono)) {
                 ejecutarHaptico('error');
-                alert('⚠️ Por favor introduce un número de teléfono válido (ej: 04141234567).');
+                alert('⚠️ El número de teléfono celular debe contener exactamente 7 dígitos.');
+                inputNumTelf.focus();
                 return;
             }
 
-            if (cedula.length < 6) {
+            if (!/^\d{6,10}$/.test(numDocumento)) {
                 ejecutarHaptico('error');
-                alert('⚠️ Por favor introduce una cédula o RIF válido (ej: V-12345678).');
+                alert('⚠️ El número de documento o pasaporte debe contener entre 6 y 10 dígitos numéricos.');
+                inputNumDoc.focus();
                 return;
             }
         } else {
-            const binanceId = inputBinanceId.value.trim();
-            if (binanceId.length < 5) {
+            const binanceIdentificador = inputBinanceId.value.trim();
+            const esPayIdNumerico = /^\d{8,10}$/.test(binanceIdentificador);
+            const esCorreoElectronico = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(binanceIdentificador);
+
+            if (!esPayIdNumerico && !esCorreoElectronico) {
                 ejecutarHaptico('error');
-                alert('⚠️ Por favor introduce un Binance Pay ID o correo válido.');
+                alert('⚠️ Introduce un Binance Pay ID numérico válido (8 a 10 dígitos) o un correo electrónico válido.');
+                inputBinanceId.focus();
                 return;
             }
         }
@@ -804,7 +876,7 @@
     }
 
     // =========================================================
-    // 7. PASO 3: CÁLCULO Y VISOR DE CANTIDADES
+    // 7. PASO 3: CÁLCULOS Y RENDERIZADO DEL VISOR
     // =========================================================
     function obtenerValorNumerico() {
         const centimos = parseInt(bufferCentimos, 10) || 0;
@@ -820,11 +892,9 @@
         const valorActual = obtenerValorNumerico();
 
         if (canalSeleccionado === 'binance') {
-            // Modo Binance Pay: 1 USDT = 1 USKT directo
             cifraPrincipal.textContent = `${valorActual.toFixed(2)} USDT`;
             cifraSecundaria.textContent = `= ${valorActual.toFixed(2)} USKT (Paridad 1:1)`;
         } else {
-            // Modo Pago Móvil: Alternancia BS / USKT con tasa
             if (modoMoneda === 'BS') {
                 const montoBS = valorActual;
                 const montoUSKT = TASA_CAMBIO > 0 ? (montoBS / TASA_CAMBIO) : 0;
@@ -838,11 +908,7 @@
             }
         }
 
-        if (valorActual > 0) {
-            btnConfirmarOperacion.disabled = false;
-        } else {
-            btnConfirmarOperacion.disabled = true;
-        }
+        btnConfirmarOperacion.disabled = valorActual <= 0;
     }
 
     function cambiarModoMoneda(nuevoModo) {
@@ -937,7 +1003,7 @@
     }
 
     // =========================================================
-    // 9. DESPACHO ATÓMICO CON DATOS COMPLETOS
+    // 9. DESPACHO CONSOLIDADO A VERCEL SERVERLESS
     // =========================================================
     async function procesarConfirmacion() {
         const valorActual = obtenerValorNumerico();
@@ -967,13 +1033,13 @@
             }
         }
 
-        // Empaquetar datos de cuenta declarados por el usuario
+        // Construcción de los datos de cuenta normalizados
         const datosCuenta = canalSeleccionado === 'pagomovil'
             ? {
                 canal: 'Pago Móvil',
                 banco: inputBanco.value,
-                telefono: inputTelefono.value.trim(),
-                cedula: inputCedula.value.trim()
+                telefono: `${selectPrefijoTelf.value}${inputNumTelf.value.trim()}`,
+                cedula: `${selectTipoDoc.value}-${inputNumDoc.value.trim()}`
             }
             : {
                 canal: 'Binance Pay',
@@ -1045,9 +1111,8 @@
         }
     }
 
-    // Inicializar al cargar el DOM
+    // Inicializar interfaz al montar el DOM
     window.addEventListener('DOMContentLoaded', inicializarInterfaz);
 </script>
 </body>
 </html>
-    

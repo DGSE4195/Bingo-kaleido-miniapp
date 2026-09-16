@@ -1369,6 +1369,7 @@
             canal: canalSeleccionado,
             datos_cuenta: datosCuenta,
             guardar_cuenta: guardarCuentaFinal,
+            solicitar_comprobante: (tipoOperacion === 'retiro') ? Boolean(chkSolicitarComprobante && chkSolicitarComprobante.checked) : false,
             moneda_origen: modoMoneda,
             monto_uskt: parseFloat(montoFinalUSKT.toFixed(2)),
             monto_bs: parseFloat(montoFinalBS.toFixed(2)),

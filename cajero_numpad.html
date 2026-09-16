@@ -808,6 +808,23 @@
             </div>
         </div>
 
+        <!-- Selector Exclusivo Retiro: Modo de Liquidación y Advertencia Operativa -->
+        <div id="bloqueModoLiquidacion" style="display: none; flex-direction: column; gap: 4px; margin-bottom: 6px;">
+            <div class="switch-moneda-container" style="margin-bottom: 2px;">
+                <button type="button" class="btn-switch activo" id="btnLiqInmediata" onclick="seleccionarModoComprobante(false)">
+                    <span>⚡</span>
+                    <span>Liquidación Inmediata</span>
+                </button>
+                <button type="button" class="btn-switch" id="btnLiqComprobante" onclick="seleccionarModoComprobante(true)">
+                    <span>📄</span>
+                    <span>Con Comprobante</span>
+                </button>
+            </div>
+            <div id="avisoComprobanteDemora" style="display: none; font-size: 9.5px; color: var(--text-muted); line-height: 1.35; text-align: center; padding: 2px 4px;">
+                ⚠️ <i>La emisión y despacho manual del comprobante fotográfico puede demorar el tiempo de acreditación.</i>
+            </div>
+        </div>
+
         <div class="botones-accion-row">
             <button type="button" class="btn-secundario" onclick="irAlPaso(2)">⬅️ Datos</button>
             <button type="button" class="btn-principal" id="btnConfirmarOperacion" onclick="procesarConfirmacion()">

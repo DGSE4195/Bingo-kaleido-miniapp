@@ -876,6 +876,8 @@
     const inputNumDoc = document.getElementById('inputNumDoc');
     const inputBinanceId = document.getElementById('inputBinanceId');
     const chkGuardarCuenta = document.getElementById('chkGuardarCuenta');
+    const bloqueSolicitarComprobante = document.getElementById('bloqueSolicitarComprobante');
+    const chkSolicitarComprobante = document.getElementById('chkSolicitarComprobante');
 
     // Referencias DOM - Paso 3: Numpad y Visor
     const contenedorSwitchMoneda = document.getElementById('contenedorSwitchMoneda');
@@ -899,10 +901,16 @@
             textoOperacion.textContent = 'CAJERO P2P • RETIRO';
             etiquetaVisor.textContent = 'CANTIDAD A RETIRAR';
             textoBotonConfirmar.textContent = 'CONFIRMAR RETIRO';
+            if (bloqueSolicitarComprobante) {
+                bloqueSolicitarComprobante.style.display = 'flex';
+            }
         } else {
             textoOperacion.textContent = 'CAJERO P2P • RECARGA';
             etiquetaVisor.textContent = 'CANTIDAD A RECARGAR';
             textoBotonConfirmar.textContent = 'CONFIRMAR RECARGA';
+            if (bloqueSolicitarComprobante) {
+                bloqueSolicitarComprobante.style.display = 'none';
+            }
         }
 
         // 1. Fijar el Paso 1 inmediatamente para navegación instantánea

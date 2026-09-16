@@ -836,6 +836,8 @@
     // =========================================================
     // 2. CONFIGURACIÓN INICIAL Y CONSULTA DE CUENTAS GUARDADAS
     // =========================================================
+    let promesaMetodos = null;
+
     async function inicializarInterfaz() {
         badgeTasaReferencial.textContent = `1 USKT = Bs. ${TASA_CAMBIO.toFixed(2)}`;
 
@@ -849,32 +851,11 @@
             textoBotonConfirmar.textContent = 'CONFIRMAR RECARGA';
         }
 
-        // 1. Fijar el Paso 1 inmediatamente para evitar retrasos de interfaz
+        // 1. Fijar el Paso 1 inmediatamente para navegación instantánea
         irAlPaso(1);
 
-        // 2. Cargar en segundo plano las cuentas registradas del jugador
-        await cargarMetodosGuardados();
-
-        // 3. Si el usuario ya seleccionó un canal mientras cargaba la red, sincronizar cuentas sin regresar la vista
-        if (pasoActual === 2 && canalSeleccionado) {
-            if (canalSeleccionado === 'binance') {
-                metodosFiltrados = metodosGuardados.filter(m => m.banco === 'Binance Pay');
-            } else {
-                metodosFiltrados = metodosGuardados.filter(m => m.banco !== 'Binance Pay');
-            }
-
-            if (metodosFiltrados.length > 0 && !modoCreacionManual) {
-                bloqueCuentasGuardadas.style.display = 'flex';
-                contenedorTarjetasGuardadas.style.display = 'flex';
-                if (contenedorTarjetasGuardadas.previousElementSibling) {
-                    contenedorTarjetasGuardadas.previousElementSibling.style.display = 'block';
-                }
-                bloqueFormularioManual.style.display = 'none';
-                btnToggleNueva.innerHTML = '<span>➕</span><span>Usar o Registrar otra cuenta</span>';
-                renderizarCuentasGuardadas();
-                seleccionarCuentaGuardada(0);
-            }
-        }
+        // 2. Iniciar de inmediato la promesa de carga de cuentas registradas
+        promesaMetodos = cargarMetodosGuardados();
     }
 
     async function cargarMetodosGuardados() {
@@ -894,6 +875,7 @@
             console.warn("Aviso: No se pudieron cargar las cuentas previas:", error);
         }
     }
+
     // =========================================================
     // 3. RESPUESTA HÁPTICA AUXILIAR
     // =========================================================
@@ -938,9 +920,14 @@
     // =========================================================
     // 5. PASO 1: SELECCIÓN DEL CANAL DE PAGO
     // =========================================================
-    function seleccionarCanal(canal) {
+    async function seleccionarCanal(canal) {
         ejecutarHaptico('medium');
         canalSeleccionado = canal;
+
+        // Esperar activamente a que la petición de red concluya si el usuario pulsó de forma instantánea
+        if (promesaMetodos) {
+            await promesaMetodos;
+        }
 
         // Filtrar métodos registrados según el canal elegido
         if (canal === 'binance') {

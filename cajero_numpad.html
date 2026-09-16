@@ -953,6 +953,10 @@
         // Si el usuario tiene cuentas guardadas para este canal, mostrarlas
         if (metodosFiltrados.length > 0) {
             bloqueCuentasGuardadas.style.display = 'flex';
+            contenedorTarjetasGuardadas.style.display = 'flex';
+            if (contenedorTarjetasGuardadas.previousElementSibling) {
+                contenedorTarjetasGuardadas.previousElementSibling.style.display = 'block';
+            }
             bloqueFormularioManual.style.display = 'none';
             btnToggleNueva.innerHTML = '<span>➕</span><span>Usar o Registrar otra cuenta</span>';
             modoCreacionManual = false;
@@ -997,6 +1001,7 @@
     function seleccionarCuentaGuardada(indice) {
         ejecutarHaptico('light');
         metodoSeleccionado = metodosFiltrados[indice];
+        modoCreacionManual = false;
 
         metodosFiltrados.forEach((_, idx) => {
             const el = document.getElementById(`tarjetaGuardada_${idx}`);
@@ -1018,6 +1023,12 @@
         modoCreacionManual = !modoCreacionManual;
 
         if (modoCreacionManual) {
+            // Ocultar lista de tarjetas guardadas y su encabezado
+            contenedorTarjetasGuardadas.style.display = 'none';
+            if (contenedorTarjetasGuardadas.previousElementSibling) {
+                contenedorTarjetasGuardadas.previousElementSibling.style.display = 'none';
+            }
+            // Mostrar formulario manual nuevo
             bloqueFormularioManual.style.display = 'flex';
             btnToggleNueva.innerHTML = '<span>📋</span><span>Ver cuentas guardadas</span>';
             metodoSeleccionado = null;
@@ -1028,6 +1039,12 @@
                 if (chk) chk.textContent = '';
             });
         } else {
+            // Volver a mostrar tarjetas guardadas y su encabezado
+            contenedorTarjetasGuardadas.style.display = 'flex';
+            if (contenedorTarjetasGuardadas.previousElementSibling) {
+                contenedorTarjetasGuardadas.previousElementSibling.style.display = 'block';
+            }
+            // Ocultar formulario manual
             bloqueFormularioManual.style.display = 'none';
             btnToggleNueva.innerHTML = '<span>➕</span><span>Usar o Registrar otra cuenta</span>';
             if (metodosFiltrados.length > 0) {

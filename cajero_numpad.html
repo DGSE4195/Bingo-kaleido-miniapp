@@ -849,8 +849,32 @@
             textoBotonConfirmar.textContent = 'CONFIRMAR RECARGA';
         }
 
-        await cargarMetodosGuardados();
+        // 1. Fijar el Paso 1 inmediatamente para evitar retrasos de interfaz
         irAlPaso(1);
+
+        // 2. Cargar en segundo plano las cuentas registradas del jugador
+        await cargarMetodosGuardados();
+
+        // 3. Si el usuario ya seleccionó un canal mientras cargaba la red, sincronizar cuentas sin regresar la vista
+        if (pasoActual === 2 && canalSeleccionado) {
+            if (canalSeleccionado === 'binance') {
+                metodosFiltrados = metodosGuardados.filter(m => m.banco === 'Binance Pay');
+            } else {
+                metodosFiltrados = metodosGuardados.filter(m => m.banco !== 'Binance Pay');
+            }
+
+            if (metodosFiltrados.length > 0 && !modoCreacionManual) {
+                bloqueCuentasGuardadas.style.display = 'flex';
+                contenedorTarjetasGuardadas.style.display = 'flex';
+                if (contenedorTarjetasGuardadas.previousElementSibling) {
+                    contenedorTarjetasGuardadas.previousElementSibling.style.display = 'block';
+                }
+                bloqueFormularioManual.style.display = 'none';
+                btnToggleNueva.innerHTML = '<span>➕</span><span>Usar o Registrar otra cuenta</span>';
+                renderizarCuentasGuardadas();
+                seleccionarCuentaGuardada(0);
+            }
+        }
     }
 
     async function cargarMetodosGuardados() {
@@ -870,7 +894,6 @@
             console.warn("Aviso: No se pudieron cargar las cuentas previas:", error);
         }
     }
-
     // =========================================================
     // 3. RESPUESTA HÁPTICA AUXILIAR
     // =========================================================

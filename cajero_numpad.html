@@ -838,6 +838,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const tipoOperacion = (urlParams.get('tipo') || urlParams.get('modo') || 'recarga').toLowerCase();
     const tasaParam = parseFloat(urlParams.get('tasa')) || 946.30;
+    const saldoParam = parseFloat(urlParams.get('saldo')) || 0.0;
     const apiUrlParam = urlParams.get('api_url') || 'https://bingo-kalei-ve.vercel.app';
     const botMsgIdParam = urlParams.get('bot_msg_id') || '';
 
@@ -903,10 +904,9 @@
     let promesaMetodos = null;
 
     async function inicializarInterfaz() {
-        badgeTasaReferencial.textContent = `1 USKT = Bs. ${TASA_CAMBIO.toFixed(2)}`;
-
         if (tipoOperacion === 'retiro') {
             textoOperacion.textContent = 'CAJERO P2P • RETIRO';
+            badgeTasaReferencial.textContent = `Saldo: ${saldoParam.toFixed(2)} USKT`;
             etiquetaVisor.textContent = 'CANTIDAD A RETIRAR';
             textoBotonConfirmar.textContent = 'CONFIRMAR RETIRO';
             if (bloqueModoLiquidacion) {
@@ -914,6 +914,7 @@
             }
         } else {
             textoOperacion.textContent = 'CAJERO P2P • RECARGA';
+            badgeTasaReferencial.textContent = `1 USKT = Bs. ${TASA_CAMBIO.toFixed(2)}`;
             etiquetaVisor.textContent = 'CANTIDAD A RECARGAR';
             textoBotonConfirmar.textContent = 'CONFIRMAR RECARGA';
             if (bloqueModoLiquidacion) {

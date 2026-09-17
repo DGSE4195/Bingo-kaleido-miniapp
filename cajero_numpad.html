@@ -797,7 +797,10 @@
         </div>
 
         <!-- Selector Exclusivo Retiro: Modo de Liquidación y Advertencia Operativa -->
-        <div id="bloqueModoLiquidacion" style="display: none; flex-direction: column; gap: 4px; margin-bottom: 6px;">
+        <div id="bloqueModoLiquidacion" style="display: none; flex-direction: column; gap: 6px; margin-bottom: 8px;">
+            <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; text-align: center;">
+                MODO DE LIQUIDACIÓN DE FONDOS:
+            </div>
             <div class="switch-moneda-container" style="margin-bottom: 2px;">
                 <button type="button" class="btn-switch activo" id="btnLiqInmediata" onclick="seleccionarModoComprobante(false)">
                     <span>⚡</span>
@@ -808,8 +811,8 @@
                     <span>Con Comprobante</span>
                 </button>
             </div>
-            <div id="avisoComprobanteDemora" style="display: none; font-size: 9.5px; color: var(--text-muted); line-height: 1.35; text-align: center; padding: 2px 4px;">
-                ⚠️ <i>La emisión y despacho manual del comprobante fotográfico puede demorar el tiempo de acreditación.</i>
+            <div id="avisoComprobanteDemora" style="display: block; font-size: 12px; line-height: 1.45; text-align: center; padding: 8px 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #a7f3d0;">
+                ⚡ <b>Transferencia directa:</b> Se transfiere a tu cuenta bancaria sin demora por emisión de comprobante fotográfico.
             </div>
         </div>
 

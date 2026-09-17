@@ -1392,7 +1392,7 @@
             canal: canalSeleccionado,
             datos_cuenta: datosCuenta,
             guardar_cuenta: guardarCuentaFinal,
-            solicitar_comprobante: (tipoOperacion === 'retiro') ? Boolean(chkSolicitarComprobante && chkSolicitarComprobante.checked) : false,
+            solicitar_comprobante: (tipoOperacion === 'retiro') ? Boolean(solicitarComprobante) : false,
             moneda_origen: modoMoneda,
             monto_uskt: parseFloat(montoFinalUSKT.toFixed(2)),
             monto_bs: parseFloat(montoFinalBS.toFixed(2)),
@@ -1401,7 +1401,7 @@
             bot_msg_id: botMsgIdParam,
             init_data: rawInitData
         };
-
+        
         const endpointDestino = `${apiUrlParam.replace(/\/$/, '')}/api/cajero-submit`;
 
         try {

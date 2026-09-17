@@ -939,11 +939,23 @@
         if (solicitarComprobante) {
             btnLiqComprobante.classList.add('activo');
             btnLiqInmediata.classList.remove('activo');
-            if (avisoComprobanteDemora) avisoComprobanteDemora.style.display = 'block';
+            if (avisoComprobanteDemora) {
+                avisoComprobanteDemora.style.display = 'block';
+                avisoComprobanteDemora.style.background = 'rgba(245, 158, 11, 0.12)';
+                avisoComprobanteDemora.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+                avisoComprobanteDemora.style.color = '#fde68a';
+                avisoComprobanteDemora.innerHTML = '📄 <b>Con Comprobante oficial:</b> El operador adjuntará la captura bancaria en el chat privado (demora unos minutos adicionales).';
+            }
         } else {
             btnLiqInmediata.classList.add('activo');
             btnLiqComprobante.classList.remove('activo');
-            if (avisoComprobanteDemora) avisoComprobanteDemora.style.display = 'none';
+            if (avisoComprobanteDemora) {
+                avisoComprobanteDemora.style.display = 'block';
+                avisoComprobanteDemora.style.background = 'rgba(16, 185, 129, 0.12)';
+                avisoComprobanteDemora.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+                avisoComprobanteDemora.style.color = '#a7f3d0';
+                avisoComprobanteDemora.innerHTML = '⚡ <b>Transferencia directa:</b> Se transfiere a tu cuenta bancaria sin demora por emisión de comprobante fotográfico.';
+            }
         }
     }
 

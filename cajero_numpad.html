@@ -847,6 +847,7 @@
     let TASA_CAMBIO = tasaParam;
     let modoMoneda = 'BS'; // 'BS' o 'USKT'
     let bufferCentimos = "0";
+    let solicitarComprobante = false;
 
     // Estados de Cuentas Guardadas (Libreta)
     let metodosGuardados = [];
@@ -881,16 +882,18 @@
     const inputNumDoc = document.getElementById('inputNumDoc');
     const inputBinanceId = document.getElementById('inputBinanceId');
     const chkGuardarCuenta = document.getElementById('chkGuardarCuenta');
-    const bloqueSolicitarComprobante = document.getElementById('bloqueSolicitarComprobante');
-    const chkSolicitarComprobante = document.getElementById('chkSolicitarComprobante');
 
-    // Referencias DOM - Paso 3: Numpad y Visor
+    // Referencias DOM - Paso 3: Numpad, Visor y Selector de Liquidación
     const contenedorSwitchMoneda = document.getElementById('contenedorSwitchMoneda');
     const btnModoBS = document.getElementById('btnModoBS');
     const btnModoUSKT = document.getElementById('btnModoUSKT');
     const etiquetaVisor = document.getElementById('etiquetaVisor');
     const cifraPrincipal = document.getElementById('cifraPrincipal');
     const cifraSecundaria = document.getElementById('cifraSecundaria');
+    const bloqueModoLiquidacion = document.getElementById('bloqueModoLiquidacion');
+    const btnLiqInmediata = document.getElementById('btnLiqInmediata');
+    const btnLiqComprobante = document.getElementById('btnLiqComprobante');
+    const avisoComprobanteDemora = document.getElementById('avisoComprobanteDemora');
     const btnConfirmarOperacion = document.getElementById('btnConfirmarOperacion');
     const textoBotonConfirmar = document.getElementById('textoBotonConfirmar');
 
@@ -906,15 +909,15 @@
             textoOperacion.textContent = 'CAJERO P2P • RETIRO';
             etiquetaVisor.textContent = 'CANTIDAD A RETIRAR';
             textoBotonConfirmar.textContent = 'CONFIRMAR RETIRO';
-            if (bloqueSolicitarComprobante) {
-                bloqueSolicitarComprobante.style.display = 'flex';
+            if (bloqueModoLiquidacion) {
+                bloqueModoLiquidacion.style.display = 'flex';
             }
         } else {
             textoOperacion.textContent = 'CAJERO P2P • RECARGA';
             etiquetaVisor.textContent = 'CANTIDAD A RECARGAR';
             textoBotonConfirmar.textContent = 'CONFIRMAR RECARGA';
-            if (bloqueSolicitarComprobante) {
-                bloqueSolicitarComprobante.style.display = 'none';
+            if (bloqueModoLiquidacion) {
+                bloqueModoLiquidacion.style.display = 'none';
             }
         }
 
@@ -923,6 +926,21 @@
 
         // 2. Iniciar de inmediato la promesa de carga de cuentas registradas
         promesaMetodos = cargarMetodosGuardados();
+    }
+
+    function seleccionarModoComprobante(quiereComprobante) {
+        ejecutarHaptico('medium');
+        solicitarComprobante = quiereComprobante;
+
+        if (solicitarComprobante) {
+            btnLiqComprobante.classList.add('activo');
+            btnLiqInmediata.classList.remove('activo');
+            if (avisoComprobanteDemora) avisoComprobanteDemora.style.display = 'block';
+        } else {
+            btnLiqInmediata.classList.add('activo');
+            btnLiqComprobante.classList.remove('activo');
+            if (avisoComprobanteDemora) avisoComprobanteDemora.style.display = 'none';
+        }
     }
 
     async function cargarMetodosGuardados() {

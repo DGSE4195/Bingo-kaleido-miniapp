@@ -1341,10 +1341,6 @@
             return;
         }
 
-        ejecutarHaptico('medium');
-        btnConfirmarOperacion.disabled = true;
-        textoBotonConfirmar.textContent = 'PROCESANDO...';
-
         let montoFinalUSKT = 0;
         let montoFinalBS = 0;
 
@@ -1354,12 +1350,28 @@
         } else {
             if (modoMoneda === 'BS') {
                 montoFinalBS = valorActual;
-                montoFinalUSKT = TASA_CAMBIO > 0 ? (valorActual / TASA_CAMBIO) : 0;
+                montoFinalUSKT = TASA_CAMBIO > 0 ? (montoFinalBS / TASA_CAMBIO) : 0;
             } else {
                 montoFinalUSKT = valorActual;
                 montoFinalBS = valorActual * TASA_CAMBIO;
             }
         }
+
+        if (montoFinalUSKT < 0.10) {
+            ejecutarHaptico('error');
+            alert('⚠️ El monto mínimo permitido para operar es de 0.10 USKT.');
+            return;
+        }
+
+        if (tipoOperacion === 'retiro' && montoFinalUSKT > saldoParam) {
+            ejecutarHaptico('error');
+            alert(`⚠️ Saldo insuficiente. Dispones de ${saldoParam.toFixed(2)} USKT.`);
+            return;
+        }
+
+        ejecutarHaptico('medium');
+        btnConfirmarOperacion.disabled = true;
+        textoBotonConfirmar.textContent = 'PROCESANDO...';
 
         // Construcción de los datos de cuenta (guardada o nueva)
         let datosCuenta = {};

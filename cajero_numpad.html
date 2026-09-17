@@ -1204,24 +1204,39 @@
     function actualizarVisualizador() {
         const valorActual = obtenerValorNumerico();
 
+        let montoCalculadoUSKT = 0;
+
         if (canalSeleccionado === 'binance') {
+            montoCalculadoUSKT = valorActual;
             cifraPrincipal.textContent = `${valorActual.toFixed(2)} USDT`;
             cifraSecundaria.textContent = `= ${valorActual.toFixed(2)} USKT (Paridad 1:1)`;
         } else {
             if (modoMoneda === 'BS') {
                 const montoBS = valorActual;
-                const montoUSKT = TASA_CAMBIO > 0 ? (montoBS / TASA_CAMBIO) : 0;
+                montoCalculadoUSKT = TASA_CAMBIO > 0 ? (montoBS / TASA_CAMBIO) : 0;
                 cifraPrincipal.textContent = `Bs. ${montoBS.toFixed(2)}`;
-                cifraSecundaria.textContent = `≈ ${montoUSKT.toFixed(2)} USKT`;
+                cifraSecundaria.textContent = `≈ ${montoCalculadoUSKT.toFixed(2)} USKT`;
             } else {
-                const montoUSKT = valorActual;
-                const montoBS = montoUSKT * TASA_CAMBIO;
-                cifraPrincipal.textContent = `${montoUSKT.toFixed(2)} USKT`;
+                montoCalculadoUSKT = valorActual;
+                const montoBS = montoCalculadoUSKT * TASA_CAMBIO;
+                cifraPrincipal.textContent = `${montoCalculadoUSKT.toFixed(2)} USKT`;
                 cifraSecundaria.textContent = `≈ Bs. ${montoBS.toFixed(2)}`;
             }
         }
 
-        btnConfirmarOperacion.disabled = valorActual <= 0;
+        if (valorActual <= 0) {
+            btnConfirmarOperacion.disabled = true;
+            textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR RECARGA';
+        } else if (montoCalculadoUSKT < 0.10) {
+            btnConfirmarOperacion.disabled = true;
+            textoBotonConfirmar.textContent = 'MÍNIMO 0.10 USKT';
+        } else if (tipoOperacion === 'retiro' && montoCalculadoUSKT > saldoParam) {
+            btnConfirmarOperacion.disabled = true;
+            textoBotonConfirmar.textContent = 'SALDO INSUFICIENTE';
+        } else {
+            btnConfirmarOperacion.disabled = false;
+            textoBotonConfirmar.textContent = tipoOperacion === 'retiro' ? 'CONFIRMAR RETIRO' : 'CONFIRMAR RECARGA';
+        }
     }
 
     function cambiarModoMoneda(nuevoModo) {

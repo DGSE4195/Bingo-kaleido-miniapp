@@ -730,20 +730,8 @@
                     <input type="checkbox" id="chkGuardarCuenta" checked />
                     <span>Guardar esta cuenta para futuras operaciones</span>
                 </label>
-
-                <!-- Bloque Exclusivo de Retiros: Solicitud Opcional de Comprobante -->
-                <div id="bloqueSolicitarComprobante" style="display: none; flex-direction: column; gap: 4px; margin-top: 4px;">
-                    <label class="checkbox-contenedor">
-                        <input type="checkbox" id="chkSolicitarComprobante" />
-                        <span>Solicitar comprobante de transferencia bancaria</span>
-                    </label>
-                    <span style="font-size: 10px; color: var(--text-muted); line-height: 1.35; padding-left: 23px;">
-                        ⚠️ <i>Al solicitar comprobante, la acreditación puede demorar más tiempo debido a la generación y envío del archivo por el operador. Desmárcalo para una liquidación inmediata.</i>
-                    </span>
-                </div>
             </div>
         </div>
-
         <div class="botones-accion-row">
             <button type="button" class="btn-secundario" onclick="irAlPaso(1)">⬅️ Canal</button>
             <button type="button" class="btn-principal" onclick="validarYContinuarPaso2()">Continuar ➡️</button>

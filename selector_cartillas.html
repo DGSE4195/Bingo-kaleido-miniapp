@@ -349,6 +349,7 @@
         const esVip = (urlParams.get('vip') || '').toLowerCase() === 'si';
         const rawBackend = urlParams.get('api') || urlParams.get('api_url') || "https://bingo-kalei-ve.vercel.app";
         const BACKEND_URL = rawBackend.replace(/\/+$/, '');
+        const botMsgId = urlParams.get('bot_msg_id') || "";
 
         const PRECIO_UNITARIO = 0.50;
         const LIMITE_MAX = esVip ? 20 : 5;
@@ -440,7 +441,8 @@
             const payload = {
                 idempotency_key: crypto.randomUUID(),
                 cantidad: cantidadActual,
-                init_data: tg?.initData || ''
+                init_data: tg?.initData || '',
+                bot_msg_id: botMsgId
             };
 
             try {

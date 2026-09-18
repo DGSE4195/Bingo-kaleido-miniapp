@@ -347,7 +347,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const saldoDisponible = parseFloat(urlParams.get('saldo')) || 0.0;
         const esVip = (urlParams.get('vip') || '').toLowerCase() === 'si';
-        const BACKEND_URL = urlParams.get('api') || "";
+        const rawBackend = urlParams.get('api') || urlParams.get('api_url') || "https://bingo-kalei-ve.vercel.app";
+        const BACKEND_URL = rawBackend.replace(/\/+$/, '');
 
         const PRECIO_UNITARIO = 0.50;
         const LIMITE_MAX = esVip ? 20 : 5;
@@ -438,7 +439,8 @@
 
             const payload = {
                 idempotency_key: crypto.randomUUID(),
-                cantidad: cantidadActual
+                cantidad: cantidadActual,
+                init_data: tg?.initData || ''
             };
 
             try {
@@ -453,7 +455,7 @@
                 });
 
                 const resData = await resp.json();
-                if (resData.ok) {
+                if (resp.ok && resData.ok) {
                     hapticFeedback('success');
                     mostrarToast(`✅ ¡${cantidadActual} cartilla(s) adquiridas con éxito!`);
                     setTimeout(() => {
@@ -461,7 +463,7 @@
                     }, 1200);
                 } else {
                     hapticFeedback('error');
-                    mostrarToast(`⚠️ ${resData.error || 'Error al procesar la compra'}`);
+                    mostrarToast(`⚠️ ${resData.error || resData.detail || 'Error al procesar la compra'}`);
                     btn.disabled = false;
                     btn.style.pointerEvents = 'auto';
                     actualizarResumen();

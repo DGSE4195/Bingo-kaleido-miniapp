@@ -106,6 +106,18 @@
             text-transform: uppercase;
         }
 
+        .quota-status-sub {
+            font-size: 12px;
+            font-weight: 800;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
         .stepper-container {
             display: flex;
             align-items: center;
@@ -130,10 +142,16 @@
             transition: all 0.15s;
         }
 
-        .stepper-btn:active {
+        .stepper-btn:active:not(:disabled) {
             transform: scale(0.92);
             background: var(--btn-blue);
             border-color: #60a5fa;
+        }
+
+        .stepper-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         .quantity-display {
@@ -159,6 +177,11 @@
             background: var(--bg-cell);
             outline: none;
             border: 1px solid var(--border-cell);
+        }
+
+        .range-slider:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
         .range-slider::-webkit-slider-thumb {
@@ -195,6 +218,15 @@
         .chip-btn.active {
             background: var(--btn-blue);
             border-color: #60a5fa;
+        }
+
+        .chip-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            pointer-events: none;
+            border-color: rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-muted);
         }
 
         .financial-summary {
@@ -246,7 +278,7 @@
             transition: opacity 0.2s;
         }
 
-        .confirm-btn:active {
+        .confirm-btn:active:not(:disabled) {
             transform: scale(0.98);
         }
 
@@ -294,10 +326,14 @@
         <div class="selector-card">
             <span class="card-label">CANTIDAD DE CARTILLAS</span>
 
+            <div class="quota-status-sub" id="quotaStatusSub">
+                🎟️ En posesión: 0 | Disponibles: 5
+            </div>
+
             <div class="stepper-container">
-                <button class="stepper-btn" onclick="modificarCantidad(-1)">−</button>
+                <button class="stepper-btn" id="btnStepMinus" onclick="modificarCantidad(-1)">−</button>
                 <div class="quantity-display" id="displayCantidad">1</div>
-                <button class="stepper-btn" onclick="modificarCantidad(1)">+</button>
+                <button class="stepper-btn" id="btnStepPlus" onclick="modificarCantidad(1)">+</button>
             </div>
 
             <div class="slider-wrapper">
@@ -351,31 +387,69 @@
         const BACKEND_URL = rawBackend.replace(/\/+$/, '');
         const botMsgId = urlParams.get('bot_msg_id') || "";
 
-        const PRECIO_UNITARIO = 0.50;
-        const LIMITE_MAX = esVip ? 20 : 5;
-        let cantidadActual = 1;
+        // Lectura de cupos dinámicos del Enfoque A
+        const compradas = parseInt(urlParams.get('compradas'), 10) || 0;
+        const cupoMax = parseInt(urlParams.get('cupo_max'), 10) || (esVip ? 20 : 5);
+        const disponiblesParam = urlParams.get('disponibles');
+        const cupoDisponible = (disponiblesParam !== null && !isNaN(parseInt(disponiblesParam, 10)))
+            ? parseInt(disponiblesParam, 10)
+            : Math.max(0, cupoMax - compradas);
 
-        // Configuración de badges y límites
+        const PRECIO_UNITARIO = 0.50;
+        const LIMITE_MAX = Math.max(0, cupoDisponible);
+        let cantidadActual = LIMITE_MAX > 0 ? 1 : 0;
+
+        // Configuración de badges y textos de estado
         const badgeVip = document.getElementById('badgeVipStatus');
+        const quotaSub = document.getElementById('quotaStatusSub');
         const slider = document.getElementById('sliderCantidad');
-        slider.max = LIMITE_MAX;
+        const btnMinus = document.getElementById('btnStepMinus');
+        const btnPlus = document.getElementById('btnStepPlus');
 
         if (esVip) {
-            badgeVip.innerText = "⭐ VIP (MÁX 20)";
+            badgeVip.innerText = `⭐ VIP (${compradas}/${cupoMax})`;
             badgeVip.style.borderColor = "var(--accent-gold)";
         } else {
-            badgeVip.innerText = "JUGADOR (MÁX 5)";
+            badgeVip.innerText = `JUGADOR (${compradas}/5)`;
             badgeVip.style.borderColor = "var(--border-cell)";
         }
 
-        // Generar botones rápidos
+        quotaSub.innerText = `🎟️ En posesión: ${compradas} | Cupo adicional: ${cupoDisponible}`;
+
+        if (LIMITE_MAX === 0) {
+            slider.min = 0;
+            slider.max = 0;
+            slider.value = 0;
+            slider.disabled = true;
+            btnMinus.disabled = true;
+            btnPlus.disabled = true;
+        } else {
+            slider.min = 1;
+            slider.max = LIMITE_MAX;
+            slider.value = cantidadActual;
+        }
+
+        // Generar chips dinámicos según el tipo de usuario y cupo restante
         const chipsContainer = document.getElementById('chipsGrid');
-        const valoresChips = esVip ? [1, 5, 10, 15, 20] : [1, 2, 3, 4, 5];
-        chipsContainer.innerHTML = valoresChips.map(v => 
-            `<button class="chip-btn ${v === 1 ? 'active' : ''}" onclick="fijarCantidad(${v})">${v}</button>`
-        ).join('');
+        let valoresChips = [];
+        if (!esVip || cupoMax <= 5) {
+            valoresChips = [1, 2, 3, 4, 5];
+        } else {
+            if (LIMITE_MAX > 1 && LIMITE_MAX < 5) {
+                valoresChips = [1, 2, 3, 4, 5];
+            } else {
+                valoresChips = [1, 5, 10, 15, 20];
+            }
+        }
+
+        chipsContainer.innerHTML = valoresChips.map(v => {
+            const deshabilitado = (v > LIMITE_MAX || LIMITE_MAX === 0) ? 'disabled' : '';
+            const activo = (v === cantidadActual && LIMITE_MAX > 0) ? 'active' : '';
+            return `<button class="chip-btn ${activo}" ${deshabilitado} onclick="fijarCantidad(${v})">${v}</button>`;
+        }).join('');
 
         function modificarCantidad(delta) {
+            if (LIMITE_MAX === 0) return;
             hapticFeedback('selection');
             let nueva = cantidadActual + delta;
             if (nueva < 1) nueva = 1;
@@ -384,15 +458,22 @@
         }
 
         function sincronizarSlider(val) {
+            if (LIMITE_MAX === 0) return;
             fijarCantidad(parseInt(val, 10));
         }
 
         function fijarCantidad(val) {
-            cantidadActual = val;
+            if (LIMITE_MAX === 0) {
+                cantidadActual = 0;
+                document.getElementById('displayCantidad').innerText = "0";
+                actualizarResumen();
+                return;
+            }
+
+            cantidadActual = Math.min(Math.max(1, val), LIMITE_MAX);
             slider.value = cantidadActual;
             document.getElementById('displayCantidad').innerText = cantidadActual;
 
-            // Actualizar chips activos
             const chips = chipsContainer.querySelectorAll('.chip-btn');
             chips.forEach(c => {
                 c.classList.toggle('active', parseInt(c.innerText, 10) === cantidadActual);
@@ -402,16 +483,26 @@
         }
 
         function actualizarResumen() {
+            const btn = document.getElementById('btnConfirmar');
+            const txtRestante = document.getElementById('txtSaldoPosterior');
+
+            if (LIMITE_MAX === 0) {
+                document.getElementById('txtSaldoActual').innerText = `${saldoDisponible.toFixed(2)} USKT`;
+                document.getElementById('txtTotalPagar').innerText = `0.00 USKT`;
+                txtRestante.innerText = `${saldoDisponible.toFixed(2)} USKT`;
+                txtRestante.style.color = "var(--text-muted)";
+                btn.disabled = true;
+                btn.innerHTML = `<span>🔒</span> CUPO MÁXIMO ALCANZADO (${compradas}/${cupoMax})`;
+                return;
+            }
+
             const total = cantidadActual * PRECIO_UNITARIO;
             const restante = saldoDisponible - total;
 
             document.getElementById('txtSaldoActual').innerText = `${saldoDisponible.toFixed(2)} USKT`;
             document.getElementById('txtTotalPagar').innerText = `${total.toFixed(2)} USKT`;
-
-            const txtRestante = document.getElementById('txtSaldoPosterior');
             txtRestante.innerText = `${restante.toFixed(2)} USKT`;
 
-            const btn = document.getElementById('btnConfirmar');
             if (restante < 0) {
                 txtRestante.style.color = "var(--accent-red)";
                 btn.disabled = true;
@@ -424,6 +515,8 @@
         }
 
         async function confirmarCompra() {
+            if (LIMITE_MAX === 0) return;
+
             const total = cantidadActual * PRECIO_UNITARIO;
             const btn = document.getElementById('btnConfirmar');
 

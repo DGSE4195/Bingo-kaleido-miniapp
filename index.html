@@ -712,6 +712,12 @@
         let balotasCantadasSet = new Set();
         let intentosGlobales = 3;
 
+        // Banderas de sincronización en tiempo real desde worker.py
+        let hileraCantadaServidor = false;
+        let puntasCantadasServidor = false;
+        let kaleiCantadoServidor = false;
+        let enGraciaServidor = false;
+
         // GESTIÓN DEL BADGE VIP / UPSELL
         const badgeEl = document.getElementById('vipBadge');
         if (paramVip) {
@@ -770,20 +776,33 @@
         }
 
         function calcularDistanciaCanto(marcas) {
-            let minHilera = 5;
-            LINEAS_VALIDAS.forEach(linea => {
-                const faltantes = linea.filter(pos => !marcas.has(pos)).length;
-                if (faltantes < minHilera) minHilera = faltantes;
-            });
+            let minHilera = 99;
+            if (!hileraCantadaServidor && !enGraciaServidor && !kaleiCantadoServidor) {
+                LINEAS_VALIDAS.forEach(linea => {
+                    const faltantes = linea.filter(pos => !marcas.has(pos)).length;
+                    if (faltantes < minHilera) minHilera = faltantes;
+                });
+            }
 
-            const minPuntas = PUNTAS_POS.filter(pos => !marcas.has(pos)).length;
+            let minPuntas = 99;
+            if (!puntasCantadasServidor && !enGraciaServidor && !kaleiCantadoServidor) {
+                minPuntas = PUNTAS_POS.filter(pos => !marcas.has(pos)).length;
+            }
 
-            let minKalei = 0;
-            for (let i = 0; i < 25; i++) {
-                if (!marcas.has(i)) minKalei++;
+            let minKalei = 99;
+            if (!kaleiCantadoServidor) {
+                let faltantesKalei = 0;
+                for (let i = 0; i < 25; i++) {
+                    if (!marcas.has(i)) faltantesKalei++;
+                }
+                minKalei = faltantesKalei;
             }
 
             const minDist = Math.min(minHilera, minPuntas, minKalei);
+            if (minDist >= 99) {
+                return { distancia: 99, tipo: 'ninguno' };
+            }
+
             let tipo = 'hilera';
             if (minDist === minKalei) tipo = 'kalei';
             else if (minDist === minPuntas) tipo = 'puntas';

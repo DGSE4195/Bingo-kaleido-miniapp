@@ -937,7 +937,12 @@
             board.classList.remove('alert-cerca', 'alert-listo');
             banner.style.display = 'none';
 
-            if (paramVip) {
+            if (enGraciaServidor || kaleiCantadoServidor) {
+                banner.innerText = "⏳ VERIFICANDO GANADORES... Atento al grupo de la sala";
+                banner.style.background = 'linear-gradient(90deg, #1d4ed8, #1e40af)';
+                banner.style.color = '#ffffff';
+                banner.style.display = 'block';
+            } else if (paramVip && distInfo.distancia < 99) {
                 if (distInfo.distancia === 0) {
                     board.classList.add('alert-listo');
                     banner.innerText = `🏆 ¡CANTO DE ${distInfo.tipo.toUpperCase()} LISTO PARA RECLAMAR!`;
@@ -968,6 +973,50 @@
                 }
                 grid.appendChild(cell);
             });
+
+            actualizarEstadoBotones();
+        }
+
+        function actualizarEstadoBotones() {
+            const btnH = document.getElementById('btnHilera');
+            const btnP = document.getElementById('btnPuntas');
+            const btnK = document.getElementById('btnBingo');
+
+            if (intentosGlobales <= 0) {
+                btnH.disabled = true;
+                btnP.disabled = true;
+                btnK.disabled = true;
+                return;
+            }
+
+            if (enGraciaServidor || kaleiCantadoServidor) {
+                btnH.disabled = true;
+                btnP.disabled = true;
+                btnK.disabled = true;
+                btnH.innerHTML = '<span>🔒</span> HILERA BLOQUEADA';
+                btnP.innerHTML = '<span>🔒</span> 4 PUNTAS BLOQUEADAS';
+                btnK.innerHTML = '<span>⏳</span> VERIFICANDO GANADORES...';
+                return;
+            }
+
+            if (hileraCantadaServidor) {
+                btnH.disabled = true;
+                btnH.innerHTML = '<span>🔒</span> HILERA YA RECLAMADA';
+            } else {
+                btnH.disabled = false;
+                btnH.innerHTML = '<span>🎯</span> CANTAR HILERA';
+            }
+
+            if (puntasCantadasServidor) {
+                btnP.disabled = true;
+                btnP.innerHTML = '<span>🔒</span> 4 PUNTAS RECLAMADAS';
+            } else {
+                btnP.disabled = false;
+                btnP.innerHTML = '<span>🎯</span> CANTAR 4 PUNTAS';
+            }
+
+            btnK.disabled = false;
+            btnK.innerHTML = '<span>🏆</span> CANTAR KALEI COMPLETO';
         }
 
         function alternarMarcado(idx) {
